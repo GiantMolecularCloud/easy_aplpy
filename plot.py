@@ -15,7 +15,7 @@ __all__ = ['map','map_grid']
 
 import os
 import aplpy
-import numpy
+import numpy as np
 from astropy.coordinates import SkyCoord as SkyCoord
 from astropy import units as u
 from astropy.coordinates import Angle as Angle
@@ -56,7 +56,7 @@ def map(fitsfile, **kwargs):
         vmin        Minimum value for colormap normalization. Autoscales if not provided.
         vmax        Maximum value for colormap normalization. Autoscales if not provided.
 
-        stretch     Colormap strech. APLpy provides ‘linear’, ‘log’, ‘sqrt’, ‘arcsinh’, ‘power’.
+        stretch     Colormap strech. APLpy provides 'linear', 'log', 'sqrt', 'arcsin', 'power'.
 
         recenter    Center the image on this location and set image width/height. You either have
                     to specify radius or width and height. Must be a list array containing an
@@ -114,7 +114,7 @@ def map(fitsfile, **kwargs):
     easy_aplpy.plot.map('test_data/map.fits',
             out  = {'filename': 'abc.png', 'dpi': 300, 'transparent': False},
             cmap = 'magma',
-            vmin = 0,
+            vmin = 100,
             vmax = 8000,
             stretch  = 'log',
             recenter = [SkyCoord('00h47m33.07s -25d17m20.0s'), 40.0*u.arcsec, 32.0*u.arcsec],
@@ -313,9 +313,10 @@ def map(fitsfile, **kwargs):
     out = kwargs.get('out',os.path.splitext(fitsfile)[0]+'.png')
     if isinstance(out,str):
         fig.save(out, dpi=300, transparent=True, adjust_bbox=True)
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out)
     if isinstance(out,dict):
         fig.save(**out)
-    print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out)
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out['filename'])
 
 
 ###################################################################################################
