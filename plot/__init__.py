@@ -13,18 +13,8 @@ pV diagrams, ... in a quality that (hopefully) allows publishing.
 # import modules
 ################
 
-from . import helpers
-from . import plot
-from . import settings
-from . import custom_colormaps
-
-###################################################################################################
-
-# set default settings
-######################
-
-helpers.hide_deprecationWarnings()
-helpers.hide_nonfunctionalWarnings()
-
+from ._helpers import *
+from .map import map
+# from .map_grid import map_grid
 
 ###################################################################################################

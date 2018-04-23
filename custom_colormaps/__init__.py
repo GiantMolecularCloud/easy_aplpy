@@ -3,8 +3,8 @@
 #####################################################################
 
 """
-These functions will produce plots of channel maps, moment maps,
-pV diagrams, ... in a quality that (hopefully) allows publishing.
+Use this subpackage to define custom colormaps. E.g. a 'viridis' colormap with more contrast in
+the low values.
 """
 
 
@@ -13,18 +13,6 @@ pV diagrams, ... in a quality that (hopefully) allows publishing.
 # import modules
 ################
 
-from . import helpers
-from . import plot
-from . import settings
-from . import custom_colormaps
-
-###################################################################################################
-
-# set default settings
-######################
-
-helpers.hide_deprecationWarnings()
-helpers.hide_nonfunctionalWarnings()
-
+from ._custom_colormaps import *
 
 ###################################################################################################

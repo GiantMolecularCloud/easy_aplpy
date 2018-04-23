@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-__all__ = ['hide_deprecationWarnings','correct_velo_info']
+__all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','correct_velo_info']
 
 
 ###################################################################################################
@@ -10,13 +10,23 @@ __all__ = ['hide_deprecationWarnings','correct_velo_info']
 ################################
 
 def hide_deprecationWarnings():
-
     try:
         from matplotlib.cbook import MatplotlibDeprecationWarning as MatplotlibDeprecationWarning
         import warnings as warnings
         warnings.simplefilter('ignore', MatplotlibDeprecationWarning)
     except:
         raise Warning("easy_aplpy: Could not switch off MatplotlibDeprecationWarnings\nThese are raised because of aplpy but cause no harm.")
+
+
+def hide_nonfunctionalWarnings():
+    try:
+        import warnings
+        warnings.filterwarnings("ignore", message="This method is not functional at this time")
+        warnings.filterwarnings("ignore", message="WARNING: Requested tick spacing format cannot be shown by current label format. The tick spacing will not be changed.")
+        warnings.filterwarnings("ignore", message="No labelled objects found.")
+    except:
+        raise Warning("easy_aplpy: Could not switch off aplpy warnings about non-functional methods. They do NOT affect easy_aplpy.")
+
 
 
 ###################################################################################################
