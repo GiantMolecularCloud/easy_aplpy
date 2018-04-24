@@ -26,16 +26,28 @@ def map(fitsfile, **kwargs):
     easy_aplpy.plot.map
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Provides a simple interface to APLpy plots. A single filename is enough to get a basic plot.
+    Provides a simple interface to APLpy plots. This function generates a single image output which
+    is saved to disk by default. A single filename is enough to get a basic plot but many more
+    options are available for customisation. More details are given below in the description of the
+    many optional arguments.
+
+    Returned objects:
+    matplotlib.figure instance
+                    The figure instance is returned for further manual customisation.
 
     Mandatory unnamed arguments:
-        fitsfile    Path and file name of the fits image to be plotted
+        fitsfile    Path and file name of the fits image to be plotted. Can be a 2D image (map),
+                    3D image (cube) or a 2D position velocity diagram.
 
 
     Optional arguments:
         out         Path and file name of the created plot. If not specified, the plot will be
                     saved as png where the input image is located.
                     OR dictionary specifying matplotlib.figure.save parameters.
+
+        channel     The channel to be plotted if fitsfile is a data cube instead of a 2D image.
+                    Can be either the channel number (starting at 1) or the frequency/velocity
+                    when the axis is given as frequency or velocity.
 
         figsize     Fiugre size as tupel in inches. Defaults to A4 size (8.267 * 11.692 inches)
 
@@ -51,6 +63,12 @@ def map(fitsfile, **kwargs):
                     to specify radius or width and height. Must be a list array containing an
                     astropy.SkyCoord object plus one or two angular distances:
                     [SkyCoord(...), 1*u.arcmin] or [SkyCoord(...), 1*u.arcmin, 2*u.arcmin]
+                    For position velocity diagram a list of astropy.units objects must be given as
+                    [offset center, velocity center, width, height].
+
+        labels      This option is targeted at position velocity diagrams at allows to overwrite
+                    the labels generated from the FITS header. Must be a list of two strings for
+                    x and y axis.
 
         contour     List of contour elements. Each contour element must be a list of 'image file',
                     list of contour levels and list of colors for each contour. If only one color
@@ -117,22 +135,44 @@ def map(fitsfile, **kwargs):
             circles  = [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0}],
                         [SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0}]]
             )
+
+    easy_aplpy.plot.map('cube.fits',
+        out      = {'filename': 'cube.complex.png', 'dpi': 300, 'transparent': False},
+        channel  = 250*u.km/u.s,
+        cmap     = 'viridis',
+        vmin     = 1,
+        vmax     = 60,
+        stretch  = 'log',
+        recenter = [SkyCoord('00h47m33.07s -25d17m20.0s'), 40.0*u.arcsec, 32.0*u.arcsec],
+        contour  = [['map.fits', [2e3,4e3,6e3], 'black'],
+                    ['map.fits', [1e3,3e3,5e3], 'white']],
+        clabel   = {'fmt': '%i'},
+        legend   = True,
+        colorbar = ['top', 'brightness temperature [K]'],
+        scalebar = [1.0*u.arcsec, 'a few parsec', 'bottom'],
+        beam     = 'bottom left',
+        circles  = [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],
+                    [SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]]
+        )
     """
 
+    kwargs = _check_image_type(fitsfile, kwargs)
     fig = _set_up_figure(fitsfile, kwargs)
-    _show_map(fig, kwargs)
-    _recenter_plot(fig, kwargs)
-    _show_contours(fig, kwargs)
-    _overplot_regions(fig, kwargs)
+    _show_map(fitsfile, fig, kwargs)
+    _recenter_plot(fitsfile, fig, kwargs)
+    _show_contours(fitsfile, fig, kwargs)
+    _overplot_regions(fitsfile, fig, kwargs)
     _show_colorbar(fitsfile, fig, kwargs)
-    _show_scalebar(fig, kwargs)
-    _show_beam(fig, kwargs)
-    _show_label(fig, kwargs)
-    _show_overlays(fig, kwargs)
-    _show_ticksNlabels(fig, kwargs)
-    _show_legend(fig, kwargs)
-    _execute_code(fig, kwargs)
+    _show_scalebar(fitsfile, fig, kwargs)
+    _show_beam(fitsfile, fig, kwargs)
+    _show_label(fitsfile, fig, kwargs)
+    _show_overlays(fitsfile, fig, kwargs)
+    _show_ticksNlabels(fitsfile, fig, kwargs)
+    _show_legend(fitsfile, fig, kwargs)
+    _execute_code(fitsfile, fig, kwargs)
     _save_figure(fitsfile, fig, kwargs)
 
+    return fig
+    
 
 ###################################################################################################

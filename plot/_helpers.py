@@ -5,7 +5,7 @@
 # pV diagrams, ... in a quality that (hopefully) allows publishing. #
 #####################################################################
 
-__all__ = ['_set_up_figure','_show_map','_recenter_plot','_test_recenter_format','_show_contours','_overplot_regions','_show_colorbar','_show_scalebar','_show_beam','_show_label','_show_overlays','_show_ticksNlabels','_show_legend','_execute_code','_save_figure']
+__all__ = ['_check_image_type','_set_up_figure','_show_map','_recenter_plot','_test_recenter_format','_show_contours','_overplot_regions','_show_colorbar','_show_scalebar','_show_beam','_show_label','_show_overlays','_show_ticksNlabels','_show_legend','_execute_code','_save_figure']
 
 
 ###################################################################################################
@@ -30,15 +30,49 @@ import easy_aplpy
 # plotting subfunctions
 ###################################################################################################
 
-def _set_up_figure(fitsfile, kwargs):
-    print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting map "+fitsfile)
-    figsize  = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
-    return aplpy.FITSFigure(fitsfile, figsize=figsize)
+def _check_image_type(fitsfile, kwargs):
+    header = fits.open(fitsfile)[0].header
+    ctypes = [header['ctype'+str(i)] for i in np.arange(1,1+header['naxis'])]
+    if ( [i for i in ctypes if i in ['OFFSET','offset','POSITION','position']] ):
+        kwargs['imtype'] = 'pv'
+    else:
+        kwargs['imtype'] = 'pp'
+    return kwargs
 
 
 ###################################################################################################
 
-def _show_map(fig, kwargs):
+def _set_up_figure(fitsfile, kwargs):
+    print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting map "+fitsfile)
+    figsize = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
+    channel = kwargs.get('channel', None)
+    if ( channel == None ):
+        fig = aplpy.FITSFigure(fitsfile, figsize=figsize)
+    else:
+        if isinstance(channel, int):
+            pass
+        elif isinstance(channel, u.quantity.Quantity):
+            header = fits.open(fitsfile)[0].header
+            naxis = header['naxis']
+            #TODO automatically convert velocity/frequency if necessary: http://docs.astropy.org/en/stable/units/equivalencies.html#spectral-doppler-equivalencies
+            for i in np.arange(1,naxis+1):
+                if header['cunit'+str(i)] in ['m/s','km/s','Hz','kHz','MHz','GHz']:
+                    freqax = str(i)
+            if not freqax:
+                raise TypeError("Could not find a velocity/frequency axis in the input image.")
+            crval = u.Quantity(str(header['crval'+freqax])+header['cunit'+freqax])
+            cdelt = u.Quantity(str(header['cdelt'+freqax])+header['cunit'+freqax])
+            crpix = int(header['crpix'+freqax])
+            channel = int(((channel-crval)/cdelt)+crpix)                     # convert to channel number
+        else:
+            raise TypeError("channel needs to be channel number (int) or velocity/frequency (astropy.units object.)")
+        fig = aplpy.FITSFigure(fitsfile, slices=[channel], figsize=figsize)
+    return fig
+
+
+###################################################################################################
+
+def _show_map(fitsfile, fig, kwargs):
     cmap     = kwargs.get('cmap', 'viridis')             # the recommended cmap
     stretch  = kwargs.get('stretch', 'linear')
     vmin     = kwargs.get('vmin')                        # no default, aplpy scales automatically
@@ -48,13 +82,25 @@ def _show_map(fig, kwargs):
 
 ###################################################################################################
 
-def _recenter_plot(fig, kwargs):
+def _recenter_plot(fitsfile, fig, kwargs):
     recenter = kwargs.get('recenter')
-    if ( not recenter is None ) and _test_recenter_format(recenter):
-        if (len(recenter) == 2):
-            fig.recenter(recenter[0].ra.degree, recenter[0].dec.degree, radius=recenter[1].to(u.degree).value)
-        elif (len(recenter) == 3):
-            fig.recenter(recenter[0].ra.degree, recenter[0].dec.degree, width=recenter[1].to(u.degree).value, height=recenter[2].to(u.degree).value)
+    imtype = kwargs.get('imtype')
+    if ( imtype == 'pp' ):
+        if ( not recenter is None ) and _test_recenter_format(recenter):
+            if (len(recenter) == 2):
+                fig.recenter(recenter[0].ra.degree, recenter[0].dec.degree, radius=recenter[1].to(u.degree).value)
+            elif (len(recenter) == 3):
+                fig.recenter(recenter[0].ra.degree, recenter[0].dec.degree, width=recenter[1].to(u.degree).value, height=recenter[2].to(u.degree).value)
+    if ( imtype == 'pv' ):
+        if not ( recenter is None ):
+            if ( len(recenter) == 4 ):
+                header = fits.open(fitsfile)[0].header
+                cunit1 = u.Quantity('1'+header['cunit1'])
+                cunit2 = u.Quantity('1'+header['cunit2'])
+                fig.recenter((recenter[0].to(cunit1.unit)).value, (recenter[1].to(cunit2.unit)).value, width=(recenter[2].to(cunit1.unit)).value, height=(recenter[3].to(cunit2.unit)).value)
+            else:
+                raise TypeError("Recenter: for a pV diagram specify [offset center, velocity center, width, height] with astropy.units.")
+
 
 def _test_recenter_format(recenter):
     if not len(recenter) in [2,3]:
@@ -64,13 +110,12 @@ def _test_recenter_format(recenter):
     for x in recenter[1:]:
         if not isinstance(x, u.quantity.Quantity):
             raise TypeError("Recenter size argument(s) is not an astropy.units object.")
-
     return True
 
 
 ###################################################################################################
 
-def _show_contours(fig, kwargs):
+def _show_contours(fitsfile, fig, kwargs):
     contours = kwargs.get('contours')
     clabel   = kwargs.get('clabel')
     legend   = kwargs.get('legend')
@@ -110,7 +155,7 @@ def _show_contours(fig, kwargs):
 
 ###################################################################################################
 
-def _overplot_regions(fig, kwargs):
+def _overplot_regions(fitsfile, fig, kwargs):
     regions = kwargs.get('regions')
     if isinstance(regions,(list,tuple)):
         for region in regions:
@@ -136,10 +181,10 @@ def _show_colorbar(fitsfile, fig, kwargs):
 
 ###################################################################################################
 
-def _show_scalebar(fig, kwargs):
+def _show_scalebar(fitsfile, fig, kwargs):
     scalebar = kwargs.get('scalebar')
     if isinstance(scalebar,list) and ( len(scalebar) == 3 ):
-        fig.add_scalebar(length=scalebar[0].to(u.degree).value, label=scalebar[1], corner=scalebar[2], frame=scalebar_frame)
+        fig.add_scalebar(length=scalebar[0].to(u.degree).value, label=scalebar[1], corner=scalebar[2], frame=easy_aplpy.settings.scalebar_frame)
         fig.scalebar.set_font(size=easy_aplpy.settings.scalebar_fontsize)
         fig.scalebar.set_linestyle(easy_aplpy.settings.scalebar_linestyle)
         fig.scalebar.set_linewidth(easy_aplpy.settings.scalebar_linewidth)
@@ -148,9 +193,10 @@ def _show_scalebar(fig, kwargs):
 
 ###################################################################################################
 
-def _show_beam(fig, kwargs):
+def _show_beam(fitsfile, fig, kwargs):
     beam = kwargs.get('beam', 'bottom right')
-    if not beam is None:
+    imtype = kwargs.get('imtype')
+    if not ( beam is None ) and not ( imtype == 'pv' ):
         fig.add_beam()
         fig.beam.show()
         fig.beam.set_corner(beam)
@@ -160,7 +206,7 @@ def _show_beam(fig, kwargs):
 
 ###################################################################################################
 
-def _show_label(fig, kwargs):
+def _show_label(fitsfile, fig, kwargs):
     label = kwargs.get('label')
     if label:
         if isinstance(label, str):
@@ -173,7 +219,7 @@ def _show_label(fig, kwargs):
 
 ###################################################################################################
 
-def _show_overlays(fig, kwargs):
+def _show_overlays(fitsfile, fig, kwargs):
     circles = kwargs.get('circles')
     if circles:
         if all(isinstance(x,(list,tuple)) for x in circles):
@@ -217,23 +263,36 @@ def _show_overlays(fig, kwargs):
 
 ###################################################################################################
 
-def _show_ticksNlabels(fig, kwargs):
-    fig.tick_labels.show()
-    fig.tick_labels.set_xformat(easy_aplpy.settings.tick_label_xformat)
-    fig.tick_labels.set_yformat(easy_aplpy.settings.tick_label_yformat)
-    fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
-    fig.ticks.show()
-    fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
-    fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
-    fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
-    fig.ticks.set_color(easy_aplpy.settings.ticks_color)
-    fig.frame.set_color(easy_aplpy.settings.frame_color)
-    fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
+def _show_ticksNlabels(fitsfile, fig, kwargs):
+    imtype = kwargs.get('imtype')
+    if ( imtype == 'pp' ):
+        fig.tick_labels.show()
+        fig.tick_labels.set_xformat(easy_aplpy.settings.tick_label_xformat)
+        fig.tick_labels.set_yformat(easy_aplpy.settings.tick_label_yformat)
+        fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
+        fig.ticks.show()
+        fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
+        fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
+        fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_color(easy_aplpy.settings.ticks_color)
+        fig.frame.set_color(easy_aplpy.settings.frame_color)
+        fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
+    if ( imtype == 'pv' ):
+        labels = kwargs.get('labels')
+        if labels:
+            fig.set_axis_labels(labels[0],labels[1])
+        fig.tick_labels.show()
+        fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
+        fig.ticks.show()
+        fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_color(easy_aplpy.settings.ticks_color)
+        fig.frame.set_color(easy_aplpy.settings.frame_color)
+        fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
 
 
 ###################################################################################################
 
-def _show_legend(fig, kwargs):
+def _show_legend(fitsfile, fig, kwargs):
     legend = kwargs.get('legend')
     if legend:
         fig._ax1.legend(loc=0, fontsize=easy_aplpy.settings.colorbar_fontsize)
@@ -243,7 +302,7 @@ def _show_legend(fig, kwargs):
 
 ###################################################################################################
 
-def _execute_code(fig, kwargs):
+def _execute_code(fitsfile, fig, kwargs):
     execute_code = kwargs.get('execute_code')
     if execute_code:
         if isinstance(execute_code, (list,tuple)):

@@ -14,7 +14,6 @@ pV diagrams, ... in a quality that (hopefully) allows publishing.
 ################
 
 from ._settings import *
-from .restore_defaults import restore_defaults
 
 
 ###################################################################################################
