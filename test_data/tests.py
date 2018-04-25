@@ -4,7 +4,12 @@ import easy_aplpy
 
 from astropy.coordinates import SkyCoord
 import astropy.units as u
+import matplotlib.pyplot as plt
 
+plt.ion()
+
+
+####################################################################################################
 
 easy_aplpy.plot.map('map.fits',
     out = {'filename': 'map.simple.png'}
@@ -28,6 +33,7 @@ easy_aplpy.plot.map('map.fits',
                 [SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]]
     )
 
+####################################################################################################
 
 easy_aplpy.plot.map('cube.fits',
     out = {'filename': 'cube.simple.chan_int.png'},
@@ -58,6 +64,7 @@ easy_aplpy.plot.map('cube.fits',
                 [SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]]
     )
 
+####################################################################################################
 
 easy_aplpy.plot.map('pv.fits',
     out = {'filename': 'pv.simple.png'}
@@ -75,3 +82,22 @@ easy_aplpy.plot.map('pv.fits',
     clabel   = {'fmt': '%i'},
     colorbar = ['right', 'brightness temperature [K]']
     )
+
+####################################################################################################
+
+easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400])
+
+easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
+    out      = {'filename': 'cube.channelmap.complex.png', 'dpi': 300, 'transparent': True},
+    vmin     = 0,
+    vmax     = 60,
+    stretch  = 'linear',
+    contours = [[['cube.fits', 150, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 200, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 250, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 300, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 350, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 400, [2.5,5,10,20,40], 'black']]],
+    )
+
+####################################################################################################

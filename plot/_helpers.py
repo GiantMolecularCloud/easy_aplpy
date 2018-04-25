@@ -5,7 +5,7 @@
 # pV diagrams, ... in a quality that (hopefully) allows publishing. #
 #####################################################################
 
-__all__ = ['_check_image_type','_set_up_figure','_show_map','_recenter_plot','_test_recenter_format','_show_contours','_overplot_regions','_show_colorbar','_show_scalebar','_show_beam','_show_label','_show_overlays','_show_ticksNlabels','_show_legend','_execute_code','_save_figure']
+__all__ = ['_check_image_type','_set_up_figure','_set_up_grid','_set_up_panel_figure','_grid_panels','_show_map','_recenter_plot','_test_recenter_format','_show_contours','_show_panel_contours','_overplot_regions','_show_colorbar','_show_scalebar','_show_beam','_show_label','_show_overlays','_format_grid_ticksNlabels','_show_ticksNlabels','_show_legend','_execute_code','_save_figure']
 
 
 ###################################################################################################
@@ -20,6 +20,7 @@ from astropy.coordinates import SkyCoord as SkyCoord
 from astropy import units as u
 from astropy.coordinates import Angle as Angle
 from astropy.io import fits
+import matplotlib.pyplot as plt
 from matplotlib import rc as rc
 rc('text',usetex=True)
 
@@ -28,6 +29,10 @@ import easy_aplpy
 
 ###################################################################################################
 # plotting subfunctions
+#
+# TODO:
+# check naxis to be 2 or 3
+#
 ###################################################################################################
 
 def _check_image_type(fitsfile, kwargs):
@@ -72,11 +77,61 @@ def _set_up_figure(fitsfile, kwargs):
 
 ###################################################################################################
 
+def _set_up_grid(fitsfile, shape, kwargs):
+    print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting a "+str(shape[0])+"x"+str(shape[1])+" grid")
+    figsize = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
+    main_fig = plt.figure(figsize=figsize)
+    return main_fig
+
+
+###################################################################################################
+
+def _set_up_panel_figure(main_fig, panel, kwargs):
+    print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting panel "+str(panel['num']+1)+" of "+str(panel['npanels'])+", file: "+panel['file'])
+    figsize = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
+    fig = aplpy.FITSFigure(panel['file'], figure=main_fig, subplot=[panel['x'],panel['y'],panel['width'],panel['height']], dimensions=[0,1], slices=[panel['channel']])
+    return fig
+
+
+###################################################################################################
+
+def _grid_panels(fitsfile, shape, channels, kwargs):
+    ncols = float(shape[0])                                                    # convert to nrows/ncols to float for python 2 compatibility
+    nrows = float(shape[1])                                                    # convert to nrows/ncols to float for python 2 compatibility
+
+    # all panels to plot
+    #TODO option to specify overlap for all sides
+    overlap = kwargs.get('overlap', 0.10)                                      # symmetric overlap on all sides
+    panels_width  = (1.-2*overlap)                                             # panel height and width
+    panels_height = (1.-2*overlap)                                             # could be made different if needed
+    panels = []
+    for idx, channel in enumerate(channels):
+        pos = ''
+        if ( idx%ncols == 0 ):
+            pos += 'left'
+        if ( idx >= (nrows-1)*ncols-1 ):
+            pos += 'bottom'
+        panels.append({'num': idx,
+                       'npanels': shape[0]*shape[1],
+                       'position': pos,
+                       'type': 'map',
+                       'x': overlap+(idx%ncols)*panels_width/ncols,                         # lower left corner
+                       'y': (1.-overlap)-np.ceil((idx+1.)/ncols)*panels_height/nrows,       # lower left corner
+                       'width': panels_width/ncols,
+                       'height': panels_height/nrows,
+                       'file': fitsfile,
+                       'channel': channel
+                       })
+    return panels
+
+
+###################################################################################################
+
 def _show_map(fitsfile, fig, kwargs):
-    cmap     = kwargs.get('cmap', 'viridis')             # the recommended cmap
+    cmap     = kwargs.get('cmap', 'viridis')                                   # the recommended cmap
     stretch  = kwargs.get('stretch', 'linear')
-    vmin     = kwargs.get('vmin')                        # no default, aplpy scales automatically
-    vmax     = kwargs.get('vmax')                        # no default, aplpy scales automatically
+    vmin     = kwargs.get('vmin')                                              # no default, aplpy scales automatically
+    vmax     = kwargs.get('vmax')                                              # no default, aplpy scales automatically
     fig.show_colorscale(cmap=cmap, vmin=vmin, vmax=vmax, stretch=stretch)
 
 
@@ -152,6 +207,47 @@ def _show_contours(fitsfile, fig, kwargs):
                 if isinstance(clabel,dict):
                     fig._layers['contour_set_'+str(idx+1)].clabel(**clabel)
 
+
+###################################################################################################
+
+def _show_panel_contours(panel, fig, kwargs):
+    contours = kwargs.get('contours')
+    clabel   = kwargs.get('clabel')
+    legend   = kwargs.get('legend')
+    if contours:
+        panel_contours = contours[panel['num']]                                    # get the correct set of contours
+        if panel_contours:
+            contournum = 0                                                         # conting variable for # of contours
+            for idx,cont in enumerate(panel_contours):
+                if len(cont) == 3:
+                    fig.show_contour(data=cont[0], levels=cont[1], colors=cont[2])
+                elif len(cont) == 4:
+                    # two options when four arguments are given: slice argument (int) as second or kwargs (dict) as last element
+                    if type(cont[1]) is int:
+                        fig.show_contour(data=cont[0], slices=[cont[1]], levels=cont[2], colors=cont[3])
+                    elif type(cont[3]) is dict:
+                        fig.show_contour(data=cont[0], levels=cont[1], colors=cont[2], **cont[3])
+                    else:
+                        raise TypeError("Contour: could not interpret contour list.")
+                elif len(cont) == 5:
+                    fig.show_contour(data=cont[0], slices=cont[1], levels=cont[2], colors=cont[3], **cont[4])
+                else:
+                    raise TypeError("Contour: wrong number or format of contour parameters in contour "+str(cont)+".")
+
+                if 'legend' in kwargs:
+                    if legend is True:
+                        fig._ax1.collections[contournum].set_label(cont[0].replace('_','$\_$'))
+                    elif ( isinstance(legend, (list,tuple)) ):
+                        fig._ax1.collections[contournum].set_label(legend[idx])
+                    else:
+                        raise TypeError("Legend: either True or list of names for each contour.")
+                    contournum += len(cont[1])                                     # count up plotted contours to keep track
+
+                if 'clabel' in kwargs:
+                    if clabel == True:
+                        fig._layers['contour_set_'+str(idx+1)].clabel()
+                    if isinstance(clabel,dict):
+                        fig._layers['contour_set_'+str(idx+1)].clabel(**clabel)
 
 ###################################################################################################
 
@@ -263,6 +359,26 @@ def _show_overlays(fitsfile, fig, kwargs):
 
 ###################################################################################################
 
+def _format_grid_ticksNlabels(panel, fig, kwargs):
+    fig.axis_labels.hide()
+    fig.tick_labels.hide()
+    fig.ticks.show()
+    fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
+    fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
+    fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+    fig.ticks.set_color(easy_aplpy.settings.ticks_color)
+    fig.frame.set_color(easy_aplpy.settings.frame_color)
+
+    if ( 'left' in panel['position'] ):
+        fig.axis_labels.show_y()
+        fig.tick_labels.show_y()
+    if ( 'bottom' in panel['position'] ):
+        fig.axis_labels.show_x()
+        fig.tick_labels.show_x()
+
+
+###################################################################################################
+
 def _show_ticksNlabels(fitsfile, fig, kwargs):
     imtype = kwargs.get('imtype')
     if ( imtype == 'pp' ):
@@ -317,10 +433,10 @@ def _execute_code(fitsfile, fig, kwargs):
 def _save_figure(fitsfile, fig, kwargs):
     out = kwargs.get('out',os.path.splitext(fitsfile)[0]+'.png')
     if isinstance(out,str):
-        fig.save(out, dpi=300, transparent=True, adjust_bbox=True)
+        fig.savefig(out, dpi=300, transparent=True, adjust_bbox=True)
         print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out)
     if isinstance(out,dict):
-        fig.save(**out)
+        fig.savefig(**out)
         print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out['filename'])
 
 
