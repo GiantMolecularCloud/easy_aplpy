@@ -14,7 +14,7 @@ import easy_aplpy
 easy_aplpy.plot.map('test_data/map.fits')
 ```
 Produces this plot:
-![simple map](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/map.png)
+![simple map](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/map.simple.png)
 
 
 ### easy_aplpy.plot.grid
@@ -26,7 +26,7 @@ import easy_aplpy
 easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400])
 ```
 Produces this plot:
-![simple channel map](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/cube.png)
+![simple channel map](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/cube.channelmap.simple.png)
 
 
 
