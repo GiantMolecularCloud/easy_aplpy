@@ -14,7 +14,7 @@ import easy_aplpy
 easy_aplpy.plot.map('test_data/map.fits')
 ```
 Produces this plot:
-![simple map](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/map.simple.png)
+![simple map](test_data/map.simple.png)
 
 
 ### easy_aplpy.plot.grid
@@ -26,7 +26,7 @@ import easy_aplpy
 easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400])
 ```
 Produces this plot:
-![simple channel map](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/cube.channelmap.simple.png)
+![simple channel map](test_data/cube.channelmap.simple.png)
 
 
 
@@ -52,11 +52,11 @@ Produces this plot:
 plot a single channel of a FITS cube, channel specified as number
 ```
 easy_aplpy.plot.map('cube.fits',
-    out = {'filename': 'cube.simple.chan_int.png'},
     channel = 250
     )
 ```
-![Result]()
+[Result](test_data/cube.simple.chan_int.png)
+
 
 ### single map
 plot a single channel of a FITS cube, channel specified as velocity (spectroscopic axis is in velocity)
@@ -65,7 +65,7 @@ easy_aplpy.plot.map('cube.fits',
     channel = 250*u.km/u.s
     )
 ```
-![Result](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/cube.simple.chan_unit.png)
+[Result](test_data/cube.simple.chan_unit.png)
 
 
 ### single position-velocity diagram
@@ -73,7 +73,7 @@ easy_aplpy.plot.map('cube.fits',
 easy_aplpy.plot.map('pv.fits'
     )
 ```
-![Result](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/pv.simple.png)
+[Result](test_data/pv.simple.png)
 
 
 ### channel maps
@@ -81,7 +81,7 @@ Beside the file name, the number of columns and rows [2,3] (argument 'shape') an
 ```
 easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400])
 ```
-![Result](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/cube.channelmap.simple.png)
+![Result](test_data/cube.channelmap.simple.png)
 
 
 ### single map with complex overlays
@@ -106,7 +106,7 @@ easy_aplpy.plot.map('cube.fits',
                 [SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]]
     )
 ```
-![Result](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/cube.complex.png)
+[Result](test_data/cube.complex.png)
 
 ### position-velocity diagram with manual formatting
 The labels are specified to give more details and nicer formatting than the FITS header provides. Contours are also labeled (argument 'clabel').
@@ -124,7 +124,7 @@ easy_aplpy.plot.map('pv.fits',
     colorbar = ['right', 'brightness temperature [K]']
     )
 ```
-![Result](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/pv.complex.png)
+[Result](test_data/pv.complex.png)
 
 
 ### Channel map with partial overlays
@@ -149,4 +149,4 @@ easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
                 []]
     )
 ```
-![Result](https://github.com/GiantMolecularCloud/easy_aplpy/blob/master/test_data/cube.channelmap.complex.png)
+[Result](test_data/cube.channelmap.complex.png)
