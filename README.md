@@ -81,7 +81,7 @@ Beside the file name, the number of columns and rows [2,3] (argument 'shape') an
 ```
 easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400])
 ```
-![Result](test_data/cube.channelmap.simple.png)
+[Result](test_data/cube.channelmap.simple.png)
 
 
 ### single map with complex overlays

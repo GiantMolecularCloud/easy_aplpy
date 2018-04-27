@@ -9,28 +9,6 @@ import matplotlib.pyplot as plt
 plt.ion()
 
 
-easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
-    out      = {'filename': 'cube.channelmap.complex.png', 'dpi': 300, 'transparent': True},
-    vmin     = 0,
-    vmax     = 60,
-    stretch  = 'linear',
-    contours = [[['cube.fits', 150, [2.5,5,10,20,40], 'black']],
-                [['cube.fits', 200, [2.5,5,10,20,40], 'black']],
-                [['cube.fits', 250, [2.5,5,10,20,40], 'black']],
-                [['cube.fits', 300, [2.5,5,10,20,40], 'black']],
-                [['cube.fits', 350, [2.5,5,10,20,40], 'black']],
-                [['cube.fits', 400, [2.5,5,10,20,40], 'black']]],
-    circles  = [[],
-                [],
-                [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
-                [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
-                [],
-                []],
-    scalebar = [5.0*u.arcsec, 'some distance', 'bottom'],
-    colorbar = ['last panel', 'some units']
-    )
-
-
 ####################################################################################################
 
 easy_aplpy.plot.map('map.fits',
@@ -126,7 +104,10 @@ easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
                 [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
                 [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
                 [],
-                []]
+                []],
+    scalebar = [5.0*u.arcsec, 'some distance', 'bottom'],
+    colorbar = ['last panel', 'some units']
     )
+
 
 ####################################################################################################
