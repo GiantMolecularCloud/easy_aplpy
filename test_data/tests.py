@@ -6,13 +6,13 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 import matplotlib.pyplot as plt
 
-plt.ion()
+#plt.ion()
 
 
 ####################################################################################################
 
 easy_aplpy.plot.map('map.fits',
-    out = {'filename': 'map.simple.png'}
+    out = 'map.simple.png'
     )
 
 easy_aplpy.plot.map('map.fits',
@@ -36,12 +36,12 @@ easy_aplpy.plot.map('map.fits',
 ####################################################################################################
 
 easy_aplpy.plot.map('cube.fits',
-    out = {'filename': 'cube.simple.chan_int.png'},
+    out = 'cube.simple.chan_int.png',
     channel = 250
     )
 
 easy_aplpy.plot.map('cube.fits',
-    out = {'filename': 'cube.simple.chan_unit.png'},
+    out = 'cube.simple.chan_unit.png',
     channel = 250*u.km/u.s
     )
 
@@ -67,7 +67,7 @@ easy_aplpy.plot.map('cube.fits',
 ####################################################################################################
 
 easy_aplpy.plot.map('pv.fits',
-    out = {'filename': 'pv.simple.png'}
+    out = 'pv.simple.png'
     )
 
 easy_aplpy.plot.map('pv.fits',
@@ -86,10 +86,32 @@ easy_aplpy.plot.map('pv.fits',
 ####################################################################################################
 
 easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
-    out = {'filename': 'cube.channelmap.simple.png', 'dpi': 300})
+    out = 'cube.channelmap.simple.png'
+    )
 
+easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350],
+    out      = {'filename': 'cube.channelmap.complex.last_panel.png', 'dpi': 300, 'transparent': True},
+    vmin     = 0,
+    vmax     = 60,
+    stretch  = 'linear',
+    contours = [[['cube.fits', 150, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 200, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 250, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 300, [2.5,5,10,20,40], 'black']],
+                [['cube.fits', 350, [2.5,5,10,20,40], 'black']]],
+    circles  = [[],
+                [],
+                [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
+                [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
+                []],
+    scalebar = [5.0*u.arcsec, 'some distance', 'bottom'],
+    colorbar = ['last panel', 'some units']
+    )
+
+easy_aplpy.settings.margins = [0.15,0.10,0.05,0.05]
+easy_aplpy.settings.colorbar_width = 0.10
 easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
-    out      = {'filename': 'cube.channelmap.complex.png', 'dpi': 300, 'transparent': True},
+    out      = {'filename': 'cube.channelmap.complex.right.png', 'dpi': 300, 'transparent': True},
     vmin     = 0,
     vmax     = 60,
     stretch  = 'linear',
@@ -106,8 +128,9 @@ easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
                 [],
                 []],
     scalebar = [5.0*u.arcsec, 'some distance', 'bottom'],
-    colorbar = ['last panel', 'some units']
+    colorbar = ['right', 'some units']
     )
+easy_aplpy.settings.restore_defaults()
 
 
 ####################################################################################################

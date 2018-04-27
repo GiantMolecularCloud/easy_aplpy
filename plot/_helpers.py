@@ -20,6 +20,7 @@ from astropy.coordinates import SkyCoord as SkyCoord
 from astropy import units as u
 from astropy.coordinates import Angle as Angle
 from astropy.io import fits
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib import rc as rc
 rc('text',usetex=True)
@@ -49,7 +50,7 @@ def _check_image_type(fitsfile, kwargs):
 
 def _set_up_figure(fitsfile, kwargs):
     print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting map "+fitsfile)
-    figsize = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
+    figsize = kwargs.get('figsize', None)     # A4 in inches: (8.267,11.692)``
     channel = kwargs.get('channel', None)
     if ( channel == None ):
         fig = aplpy.FITSFigure(fitsfile, figsize=figsize)
@@ -101,7 +102,10 @@ def _set_up_grid(fitsfile, shape, kwargs):
 ###################################################################################################
 
 def _set_up_panel_figure(main_fig, panel, kwargs):
-    print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting panel "+str(panel['num']+1)+" of "+str(panel['npanels'])+", file: "+panel['file'])
+    if ( panel['type'] == 'map' ):
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting panel "+str(panel['num']+1)+" of "+str(panel['npanels'])+", file: "+panel['file'])
+    elif ( panel['type'] == 'colorbar' ):
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting panel "+str(panel['num']+1)+" of "+str(panel['npanels'])+", colorbar")
     figsize = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
     fig = aplpy.FITSFigure(panel['file'], figure=main_fig, subplot=[panel['x'],panel['y'],panel['width'],panel['height']], dimensions=[0,1], slices=[panel['channel']])
     return fig
@@ -140,15 +144,29 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
                        })
 
     if not colorbar is None:
+        idx = idx+1
         if ( colorbar[0] == 'last panel' ):
             panels.append({'num': idx+1,
                            'npanels': shape[0]*shape[1],
                            'position': None,
                            'type': 'colorbar',
-                           'x': margins[0]+(idx%ncols)*panels_width/ncols,                         # lower left corner
-                           'y': (1.-margins[2])-np.ceil((idx+1.)/ncols)*panels_height/nrows,       # lower left corner
-                           'width': panels_width/ncols,
-                           'height': panels_height/nrows,
+                           'x': margins[0]+((idx%ncols)+0.05)*panels_width/ncols,                  # lower left corner
+                           'y': (1.-margins[2])-(np.ceil((idx+1.)/ncols)-0.5)*panels_height/nrows, # lower left corner
+                           'width': panels_width/ncols*0.9,                                        # cbar fills 90% of panel width
+                           'height': panels_height/nrows*easy_aplpy.settings.colorbar_width,       # cbar height is specified fraction of panel height
+                           'file': fitsfile,
+                           'channel': None,
+                           'physical': None
+                           })
+        if ( colorbar[0] == 'right' ):
+            panels.append({'num': idx+1,
+                           'npanels': shape[0]*shape[1],
+                           'position': None,
+                           'type': 'colorbar',
+                           'x': margins[0]+((idx%ncols)+ncols)*panels_width/ncols,                 # lower left corner
+                           'y': (1.-margins[2])-(np.ceil((idx+1.)/ncols)-1.)*panels_height/nrows,  # lower left corner
+                           'width': panels_width/ncols*easy_aplpy.settings.colorbar_width,         # cbar width is specified fraction of panel width
+                           'height': panels_height/nrows,                                          # cbar is as high as panels
                            'file': fitsfile,
                            'channel': None,
                            'physical': None
@@ -280,45 +298,34 @@ def _show_grid_colorbar(fitsfile, main_fig, fig, panels, kwargs):
     vmin     = kwargs.get('vmin')                                              # no default, aplpy scales automatically
     vmax     = kwargs.get('vmax')
     if not colorbar is None:
-        if ( colorbar[0] == 'last panel' ):
-
-#TODO merge aplpy_plotting and check what I did there regarding the colorbar handling!
-
-            cbpnl = panels[-1]
-            ax1 = main_fig.add_axes([cbpnl['x'],cbpnl['y'],cbpnl['width'],cbpnl['height']*easy_aplpy.settings.colorbar_width])
-            if (stretch == 'linear'):
-                colorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), orientation='horizontal')
-            elif (stretch == 'log'):
-                log_ticks = [float('{:.2f}'.format(x)) for x in np.logspace(np.log10(kwargs['vmin']),np.log10(kwargs['vmax']),num=5, endpoint=True)]
-                colorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.LogNorm(vmin=vmin, vmax=vmax), ticks=log_ticks, orientation='horizontal')
-                colorbar.set_ticks(log_ticks)
-                colorbar.set_ticklabels(['{:.2f}'.format(x) for x in log_ticks])
-            else:
-                raise NotImplementedError("Scalings other than 'linear' and 'log' are not supported yet for grid plots.")
-
-            colorbar.set_label(colorbar[1])
-            colorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
-            colorbar.ax.tick_params(labelsize=easy_aplpy.settings.colorbar_fontsize)
-
-            from distutils.version import LooseVersion
-            if ( LooseVersion(mpl.__version__) < LooseVersion('1.3') ):
-                colorbar.outline.set_color(easy_aplpy.settings.frame_color)
-            else:
-                colorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
-
+        cbpnl = panels[-1]
+        ax1 = main_fig.add_axes([cbpnl['x'],cbpnl['y'],cbpnl['width'],cbpnl['height']])
+        if ( colorbar[0] == 'last panel' ) or ( colorbar[0] == 'top' ):
+            orientation = 'horizontal'
         elif ( colorbar[0] == 'right' ):
-            fig.add_colorbar()
-            fig.colorbar.show()
-            fig.colorbar.set_location(colorbar[0])
-            fig.colorbar.set_axis_label_text(colorbar[1])
-            if ( stretch == 'log' ):
-                log_ticks = [float('{:.2f}'.format(round(x,int(-1*np.log10(kwargs['vmin']))))) for x in np.logspace(np.log10(kwargs['vmin']),np.log10(kwargs['vmax']),num=10, endpoint=True)]
-                fig.colorbar.set_ticks(log_ticks)
-            fig.colorbar.set_font(size=easy_aplpy.settings.colorbar_fontsize)
-            fig.colorbar.set_axis_label_font(size=easy_aplpy.settings.colorbar_fontsize)
-            fig.colorbar.set_frame_color(easy_aplpy.settings.frame_color)
+            orientation = 'vertical'
         else:
             raise NotImplementedError("Only colorbar in 'last panel' and 'right' of the last panel is supported at the moment.")
+
+        if (stretch == 'linear'):
+            mplcolorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), orientation=orientation)
+        elif (stretch == 'log'):
+            log_ticks = [float('{:.2f}'.format(x)) for x in np.logspace(np.log10(kwargs['vmin']),np.log10(kwargs['vmax']),num=5, endpoint=True)]
+            mplcolorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.LogNorm(vmin=vmin, vmax=vmax), ticks=log_ticks, orientation=orientation)
+            mplcolorbar.set_ticks(log_ticks)
+            mplcolorbar.set_ticklabels(['{:.2f}'.format(x) for x in log_ticks])
+        else:
+            raise NotImplementedError("Scalings other than 'linear' and 'log' are not supported yet for grid plots.")
+
+        mplcolorbar.set_label(colorbar[1])
+        mplcolorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
+        mplcolorbar.ax.tick_params(labelsize=easy_aplpy.settings.colorbar_fontsize)
+
+        from distutils.version import LooseVersion
+        if ( LooseVersion(mpl.__version__) < LooseVersion('1.3') ):
+            mplcolorbar.outline.set_color(easy_aplpy.settings.frame_color)
+        else:
+            mplcolorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
 
 
 ###################################################################################################
