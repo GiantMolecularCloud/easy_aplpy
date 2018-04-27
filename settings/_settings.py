@@ -42,5 +42,5 @@ grid_label_pos        = [0.8,0.8]       # relative position in panel
 grid_label_color      = 'black'
 grid_label_fontsize   = 10              # unit: point
 grid_label_format     = '{:3.1f}'       # .format string
-margins               = [0.1,0.05,0.05,0.05]    # margins around figure (left, right, top, bottom)
+margins               = [0.15,0.10,0.05,0.05]    # margins around figure (left, right, top, bottom)
 props                 = {'boxstyle': "round", 'facecolor': "w", 'edgecolor': "black", 'linewidth': 0.5, 'alpha': 0.8}

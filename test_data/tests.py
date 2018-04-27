@@ -108,8 +108,6 @@ easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350],
     colorbar = ['last panel', 'some units']
     )
 
-easy_aplpy.settings.margins = [0.15,0.10,0.05,0.05]
-easy_aplpy.settings.colorbar_width = 0.10
 easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
     out      = {'filename': 'cube.channelmap.complex.right.png', 'dpi': 300, 'transparent': True},
     vmin     = 0,
@@ -130,7 +128,6 @@ easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
     scalebar = [5.0*u.arcsec, 'some distance', 'bottom'],
     colorbar = ['right', 'some units']
     )
-easy_aplpy.settings.restore_defaults()
 
 
 ####################################################################################################
