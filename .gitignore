@@ -1,5 +1,3 @@
 test_data/cube.fits
 *.DS_Store
 *.pyc
-
-*.pyc
