@@ -36,21 +36,22 @@ def grid(fitsfile, shape, channels, **kwargs):
     panels = _grid_panels(fitsfile, shape, channels, kwargs)
 
     for panel in panels:
+        if ( panel['type'] == 'map' ):
 
-        fig = _set_up_panel_figure(main_fig, panel, kwargs)
-        _show_map(panel['file'], fig, kwargs)
-        _recenter_plot(panel['file'], fig, kwargs)
-        _show_beam(panel['file'], fig, kwargs)
-        _format_grid_ticksNlabels(panel, fig, kwargs)
-        #_show_channel_label(panel, fig, kwargs)
-        _show_panel_contours(panel, fig, kwargs)
-        #_overplot_panel_regions(panel, fig, kwargs)
-        #_show_panel_overlays(panel, fig, kwargs)
-        #_show_grid_scalebar(panel, fig, kwargs)
-        #_show_legend(panel['file'], fig, kwargs)
-        #_execute_code(panel['file'], fig, kwargs)
+            fig = _set_up_panel_figure(main_fig, panel, kwargs)
+            _show_map(panel['file'], fig, kwargs)
+            _recenter_plot(panel['file'], fig, kwargs)
+            _show_beam(panel['file'], fig, kwargs)
+            _format_grid_ticksNlabels(panel, fig, kwargs)
+            _show_channel_label(panel, fig, kwargs)
+            _show_contours(panel['file'], fig, kwargs, panel)
+            _overplot_regions(panel['file'], fig, kwargs, panel)
+            _show_overlays(panel['file'], fig, kwargs, panel)
+            _show_scalebar(panel['file'], fig, kwargs, panel)
+            _execute_code(panel['file'], fig, kwargs, panel)
 
-    #_show_grid_colorbar(panel, fig, kwargs)
+    _show_grid_colorbar(fitsfile, main_fig, fig, panels, kwargs)
+    #_show_grid_legend(panel['file'], fig, kwargs)
     _save_figure(fitsfile, main_fig, kwargs)
 
     return main_fig
