@@ -3,7 +3,23 @@ Baking a publication quality plot can involve a fair bit of code. Easy APLpy can
 
 For details on APLpy see https://github.com/aplpy/aplpy
 
-## available wrappers:
+
+## Table of Contents
+
+* [Available wrappers](# Available wrappers)
+    * [easy_aplpy.plot.map](### easy_aplpy.plot.map)
+    * [easily.plot.grid](### easy_aplpy.plot.grid)
+* [Installation](# Installation)
+* [Examples](# Examples)
+    * [Single map](### single map)
+    * [Single map](### single map)
+    * [Single position-velocity diagram](### single position-velocity diagram)
+    * [Single map with complex overlays](### single map with complex overlays)
+    * [Position-velocity diagram with manual formatting](### position-velocity diagram with manual formatting)
+    * [Channel map with partial overlays](### Channel map with partial overlays)
+
+
+# available wrappers:
 
 ### easy_aplpy.plot.map
 A one-liner to quickly plot fits image that also look good. This method also provides extensive options to costumize the plot but still keep the code simple.
@@ -30,7 +46,7 @@ Produces this plot:
 
 
 
-## Installation:
+# Installation:
 - clone this repository or download the scripts
 - add the path where the file are located to your python path
     ```
@@ -44,7 +60,6 @@ Produces this plot:
 - call the plotting wrappers with `easy_aplpy.plot`
 
 
-# more details coming soon ...
 
 # Examples
 
