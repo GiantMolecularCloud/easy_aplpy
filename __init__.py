@@ -25,6 +25,8 @@ from . import custom_colormaps
 
 helpers.hide_deprecationWarnings()
 helpers.hide_nonfunctionalWarnings()
+helpers.hide_FITSwarnings()
+helpers.hide_ComparisonWarnings()
 
 
 ###################################################################################################

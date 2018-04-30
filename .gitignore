@@ -1,3 +1,4 @@
 test_data/cube.fits
+test_data/auto_testing
 *.DS_Store
 *.pyc

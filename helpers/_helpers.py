@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-__all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','correct_velo_info']
+__all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','hide_FITSwarnings','hide_ComparisonWarnings','correct_velo_info']
 
 
 ###################################################################################################
@@ -11,11 +11,11 @@ __all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','correct_velo
 
 def hide_deprecationWarnings():
     try:
-        from matplotlib.cbook import MatplotlibDeprecationWarning as MatplotlibDeprecationWarning
-        import warnings as warnings
+        from matplotlib.cbook import MatplotlibDeprecationWarning
+        import warnings
         warnings.simplefilter('ignore', MatplotlibDeprecationWarning)
     except:
-        raise Warning("easy_aplpy: Could not switch off MatplotlibDeprecationWarnings\nThese are raised because of aplpy but cause no harm.")
+        raise Warning("easy_aplpy: Could not switch off MatplotlibDeprecationWarnings.These are raised because of aplpy but cause no harm.")
 
 
 def hide_nonfunctionalWarnings():
@@ -27,6 +27,22 @@ def hide_nonfunctionalWarnings():
     except:
         raise Warning("easy_aplpy: Could not switch off aplpy warnings about non-functional methods. They do NOT affect easy_aplpy.")
 
+
+def hide_FITSwarnings():
+    try:
+        import warnings
+        warnings.filterwarnings("ignore", message="PC01_01 = 1.000000000000E+00 indices in parameterized keywords must not have leading zeroes.")
+    except:
+        raise Warning("easy_aplpy: Could not switch off aplpy warnings about leading zeros in FITS header. They do NOT affect plotting at all.")
+
+
+def hide_ComparisonWarnings():
+    try:
+        import warnings
+        warnings.filterwarnings("ignore", message="invalid value encountered in less")
+        warnings.filterwarnings("ignore", message="Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal")
+    except:
+        raise Warning("easy_aplpy: Could not switch off aplpy comparison warnings. These are raised within aplpy and do NOT affect plotting at all.")
 
 
 ###################################################################################################
