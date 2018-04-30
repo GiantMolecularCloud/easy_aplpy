@@ -9,7 +9,7 @@ For details on APLpy see https://github.com/aplpy/aplpy
 
 * [Available wrappers](#available-wrappers)
     * [easy_aplpy.plot.map](#easy_aplpy.plot.map)
-    * [easily.plot.grid](#easy_aplpy.plot.grid)
+    * [easy_aplpy.plot.grid](#easy_aplpy.plot.grid)
 * [Installation](#installation)
 * [Examples](#examples)
     * [Single map](#single-map)
