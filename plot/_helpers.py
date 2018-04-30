@@ -333,7 +333,7 @@ def _show_grid_colorbar(fitsfile, main_fig, fig, panels, kwargs):
 def _show_scalebar(fitsfile, fig, kwargs, panel=None):
     scalebar = kwargs.get('scalebar')
     if isinstance(scalebar,list) and ( len(scalebar) == 3 ):
-        if ( panel == None ) or ( ('left' and 'bottom') in panel['position'] ):
+        if ( panel == None ) or ( ('left' in panel['position']) and ('bottom' in panel['position']) ):
             #TODO allow user to define in which panel the scalebar should be drawn
             fig.add_scalebar(length=scalebar[0].to(u.degree).value, label=scalebar[1], corner=scalebar[2], frame=easy_aplpy.settings.scalebar_frame)
             fig.scalebar.set_font(size=easy_aplpy.settings.scalebar_fontsize)
