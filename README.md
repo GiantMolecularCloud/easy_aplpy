@@ -146,7 +146,9 @@ easy_aplpy.plot.grid('cube.fits', [2,3], [150,200,250,300,350,400],
                 [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
                 [[SkyCoord('00h47m33.07s -25d17m20.0s'), 10.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}],[SkyCoord('00h47m33.07s -25d17m20.0s'), 20.0*u.arcsec, {'linewidth': 1.0, 'edgecolor':'red'}]],
                 [],
-                []]
+                []],
+    scalebar = [5.0*u.arcsec, 'some distance', 'bottom'],
+    colorbar = ['last panel', 'some units']                     # or ['right', 'some units']
     )
 ```
-[Result](test_data/cube.channelmap.complex.png)
+[Result](test_data/cube.channelmap.complex.last_panel.png) or [Result](test_data/cube.channelmap.complex.right.png)
