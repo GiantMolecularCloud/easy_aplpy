@@ -16,6 +16,7 @@ __all__ = ['_check_image_type','_set_up_figure','_set_up_grid','_set_up_panel_fi
 import os
 import aplpy
 import numpy as np
+import warnings
 from astropy.coordinates import SkyCoord as SkyCoord
 from astropy import units as u
 from astropy.coordinates import Angle as Angle
@@ -53,10 +54,14 @@ def _set_up_figure(fitsfile, kwargs):
     figsize = kwargs.get('figsize', None)     # A4 in inches: (8.267,11.692)``
     channel = kwargs.get('channel', None)
     if ( channel == None ):
-        fig = aplpy.FITSFigure(fitsfile, figsize=figsize)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore")
+            fig = aplpy.FITSFigure(fitsfile, figsize=figsize)
     else:
         channel,physical = _channel_physical(fitsfile, channel)
-        fig = aplpy.FITSFigure(fitsfile, slices=[channel], figsize=figsize)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore")
+            fig = aplpy.FITSFigure(fitsfile, slices=[channel], figsize=figsize)
     return fig
 
 
@@ -107,7 +112,9 @@ def _set_up_panel_figure(main_fig, panel, kwargs):
     elif ( panel['type'] == 'colorbar' ):
         print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting panel "+str(panel['num']+1)+" of "+str(panel['npanels'])+", colorbar")
     figsize = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
-    fig = aplpy.FITSFigure(panel['file'], figure=main_fig, subplot=[panel['x'],panel['y'],panel['width'],panel['height']], dimensions=[0,1], slices=[panel['channel']])
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore")
+        fig = aplpy.FITSFigure(panel['file'], figure=main_fig, subplot=[panel['x'],panel['y'],panel['width'],panel['height']], dimensions=[0,1], slices=[panel['channel']])
     return fig
 
 

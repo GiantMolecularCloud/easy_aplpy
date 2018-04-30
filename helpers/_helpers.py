@@ -31,7 +31,7 @@ def hide_nonfunctionalWarnings():
 def hide_FITSwarnings():
     try:
         import warnings
-        warnings.filterwarnings("ignore", message="PC01_01 = 1.000000000000E+00 indices in parameterized keywords must not have leading zeroes.")
+        warnings.filterwarnings("ignore", message=".*indices in parameterized keywords must not have leading zeroes.*")
     except:
         raise Warning("easy_aplpy: Could not switch off aplpy warnings about leading zeros in FITS header. They do NOT affect plotting at all.")
 
@@ -41,6 +41,7 @@ def hide_ComparisonWarnings():
         import warnings
         warnings.filterwarnings("ignore", message="invalid value encountered in less")
         warnings.filterwarnings("ignore", message="Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal")
+        warnings.filterwarnings("ignore", message="comparison to `None` will result in an elementwise object comparison in the future.")
     except:
         raise Warning("easy_aplpy: Could not switch off aplpy comparison warnings. These are raised within aplpy and do NOT affect plotting at all.")
 
