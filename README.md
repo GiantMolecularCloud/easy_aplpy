@@ -3,11 +3,11 @@ Baking a publication quality plot can involve a fair bit of code. Easy APLpy can
 
 For details on APLpy see https://github.com/aplpy/aplpy
 
-=====
+
 
 ## Table of Contents
 
-* [Available wrappers](#available wrappers)
+* [Available wrappers](#available-wrappers)
     * [easy_aplpy.plot.map](#easy_aplpy.plot.map)
     * [easily.plot.grid](#easy_aplpy.plot.grid)
 * [Installation](#installation)
@@ -20,7 +20,7 @@ For details on APLpy see https://github.com/aplpy/aplpy
     * [Channel map with partial overlays](#channel-map-with-partial-overlays)
 
 
-=====
+
 
 #Available wrappers:
 
@@ -48,7 +48,7 @@ Produces this plot:
 ![simple channel map](test_data/cube.channelmap.simple.png)
 
 
-=====
+
 
 # Installation:
 - clone this repository or download the scripts
@@ -64,7 +64,7 @@ Produces this plot:
 - call the plotting wrappers with `easy_aplpy.plot`
 
 
-=====
+
 
 # Examples
 
