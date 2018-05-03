@@ -51,6 +51,7 @@ Produces this plot:
 
 
 # Installation:
+- Requirements: astropy, aplpy
 - clone this repository or download the scripts
 - add the path where the file are located to your python path
     ```
@@ -64,6 +65,18 @@ Produces this plot:
 - call the plotting wrappers with `easy_aplpy.plot`
 
 
+
+# Settings
+The plotting functions over many keyword arguments to customize the plots, e.g. by adding scalebars or labels.
+General style settings, i.e. settings that do not have to be changed for each plot but maybe once per script or once per project, are stored in a subpackage to be accessed as easy_aplpy.settings.some_setting.
+The default settings are listed in the file settings/_settings.py and can be changed there.
+Within the code you directly change any setting which will affect all subsequent plots.
+```
+import easy_aplpy
+easy_aplpy.settings.some_setting = ...
+```
+Often used settings are tick_label_xformat, ticks_xspacing and the corresponding settings for y.
+Check the auto-completion of easy_aplpy.settings or look at the file settings/_settings.py to see what can be changed.
 
 
 # Examples
