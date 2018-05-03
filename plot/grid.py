@@ -28,7 +28,7 @@ def grid(fitsfile, shape, channels, **kwargs):
     easy_aplpy.plot.grid
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    ...
+    info on arguments will follow soon!
     """
 
     kwargs = _check_image_type(fitsfile, kwargs)
