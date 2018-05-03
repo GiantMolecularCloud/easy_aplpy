@@ -22,7 +22,7 @@ For details on APLpy see https://github.com/aplpy/aplpy
 
 
 
-#Available wrappers:
+# Available wrappers:
 
 ### easy_aplpy.plot.map
 A one-liner to quickly plot fits image that also look good. This method also provides extensive options to costumize the plot but still keep the code simple.
