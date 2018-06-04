@@ -68,7 +68,7 @@ def grid(fitsfile, shape, channels, **kwargs):
                     For position velocity diagram a list of astropy.units objects must be given as
                     [offset center, velocity center, width, height].
 
-        contour     List of list of contour elements. Each contour element must be a list of
+        contours    List of list of contour elements. Each contour element must be a list of
                     'image file', list of contour levels and list of colors for each contour. If
                     only one color is given, it will be used for all contours. When specifying a
                     fits cube, you have to provide the slice to be used as second list element.

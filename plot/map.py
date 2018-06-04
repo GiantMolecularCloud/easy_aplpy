@@ -70,7 +70,7 @@ def map(fitsfile, **kwargs):
                     the labels generated from the FITS header. Must be a list of two strings for
                     x and y axis.
 
-        contour     List of contour elements. Each contour element must be a list of 'image file',
+        contours    List of contour elements. Each contour element must be a list of 'image file',
                     list of contour levels and list of colors for each contour. If only one color
                     is given, it will be used for all contours. When specifying a fits cube, you
                     have to provide the slice to be used as second list element. Valid mpl.contour
@@ -125,7 +125,7 @@ def map(fitsfile, **kwargs):
             vmax = 8000,
             stretch  = 'log',
             recenter = [SkyCoord('00h47m33.07s -25d17m20.0s'), 40.0*u.arcsec, 32.0*u.arcsec],
-            contour  = [['test_data/map.fits', [2e3,4e3,6e3], 'black'],
+            contours = [['test_data/map.fits', [2e3,4e3,6e3], 'black'],
                         ['test_data/map.fits', [1e3,3e3,5e3], 'white']],
             clabel   = {'fmt': '%i'},
             legend   = True,
@@ -144,7 +144,7 @@ def map(fitsfile, **kwargs):
         vmax     = 60,
         stretch  = 'log',
         recenter = [SkyCoord('00h47m33.07s -25d17m20.0s'), 40.0*u.arcsec, 32.0*u.arcsec],
-        contour  = [['map.fits', [2e3,4e3,6e3], 'black'],
+        contours = [['map.fits', [2e3,4e3,6e3], 'black'],
                     ['map.fits', [1e3,3e3,5e3], 'white']],
         clabel   = {'fmt': '%i'},
         legend   = True,
@@ -173,6 +173,6 @@ def map(fitsfile, **kwargs):
     _save_figure(fitsfile, fig, kwargs)
 
     return fig
-    
+
 
 ###################################################################################################
