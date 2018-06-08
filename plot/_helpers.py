@@ -123,7 +123,13 @@ def _set_up_panel_figure(main_fig, panel, kwargs):
 def _grid_panels(fitsfile, shape, channels, kwargs):
     ncols = float(shape[0])                                                    # convert to nrows/ncols to float for python 2 compatibility
     nrows = float(shape[1])                                                    # convert to nrows/ncols to float for python 2 compatibility
-    colorbar = kwargs.get('colorbar', ['right',fits.open(fitsfile)[0].header['bunit']])        # add the colorbar panel
+    head = fits.open(fitsfile)[0].header
+    if ( 'bunit' in head ):
+        bunit = head['bunit']
+    else:
+        raise warning("Header keyword 'BUNIT' not present in "+fitsfile)
+        bunit = 'unknown quantity'
+    colorbar = kwargs.get('colorbar', ['right',bunit])        # add the colorbar panel
 
     # all panels to plot
     margins = easy_aplpy.settings.margins
