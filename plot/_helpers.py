@@ -440,7 +440,7 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
             if panel:
                 arrows = arrows[panel['num']]                                # get the correct set of circles
             for arrow in arrows:
-                fig.show_arrows(x=arrow[0].ra.degree, yw=arrow[0].dec.degree, dx=arrow[1][0].to(u.degree).value, dy=arrow[1][1].to(u.degree).value, **arrow[2])
+                fig.show_arrows(x=arrow[0].ra.degree, y=arrow[0].dec.degree, dx=arrow[1][0].to(u.degree).value, dy=arrow[1][1].to(u.degree).value, **arrow[2])
         else:
             raise TypeError("Overlays: Must be list of lists. I.e. a single overlay needs double brackets [[]].")
 
