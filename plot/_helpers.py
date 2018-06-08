@@ -287,16 +287,18 @@ def _overplot_regions(fitsfile, fig, kwargs, panel=None):
 ###################################################################################################
 
 def _show_colorbar(fitsfile, fig, kwargs):
+    # get the header image unit if not defined by the user
+    if not kwargs.get('colorbar'):
+        head = fits.open(fitsfile)[0].header
+        if ( 'bunit' in head ):
+            bunit = head['bunit']
+        else:
+            raise warning("Header keyword 'BUNIT' not present in "+fitsfile)
+            bunit = 'unknown quantity'
+    colorbar = kwargs.get('colorbar', ['right',bunit])
+    stretch  = kwargs.get('stretch', 'linear')
+
     if not colorbar is None:
-        if not kwargs.get('colorbar'):
-            head = fits.open(fitsfile)[0].header
-            if ( 'bunit' in head ):
-                bunit = head['bunit']
-            else:
-                raise warning("Header keyword 'BUNIT' not present in "+fitsfile)
-                bunit = 'unknown quantity'
-        colorbar = kwargs.get('colorbar', ['right',bunit])
-        stretch  = kwargs.get('stretch', 'linear')
         fig.add_colorbar()
         fig.colorbar.show()
         fig.colorbar.set_location(colorbar[0])
