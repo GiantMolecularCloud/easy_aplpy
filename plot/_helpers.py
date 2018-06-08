@@ -127,7 +127,7 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
     if ( 'bunit' in head ):
         bunit = head['bunit']
     else:
-        raise warning("Header keyword 'BUNIT' not present in "+fitsfile)
+        print("Header keyword 'BUNIT' not present in "+fitsfile)
         bunit = 'unknown quantity'
     colorbar = kwargs.get('colorbar', ['right',bunit])        # add the colorbar panel
 
