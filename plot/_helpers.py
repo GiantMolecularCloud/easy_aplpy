@@ -436,7 +436,13 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
 
     arrows = kwargs.get('arrows')
     if arrows:
-        raise NotImplementedError("Overplotting arrows is not supported yet.")
+        if all(isinstance(x,(list,tuple)) for x in arrows):
+            if panel:
+                arrows = arrows[panel['num']]                                # get the correct set of circles
+            for arrow in arrows:
+                fig.show_arrows(x=arrow[0].ra.degree, yw=arrow[0].dec.degree, dx=arrow[1][0].to(u.degree).value, dy=arrow[1][1].to(u.degree).value, **arrow[2])
+        else:
+            raise TypeError("Overlays: Must be list of lists. I.e. a single overlay needs double brackets [[]].")
 
     ellipses = kwargs.get('ellipses')
     if ellipses:
