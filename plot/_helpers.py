@@ -293,7 +293,7 @@ def _show_colorbar(fitsfile, fig, kwargs):
         if ( 'bunit' in head ):
             bunit = head['bunit']
         else:
-            raise warning("Header keyword 'BUNIT' not present in "+fitsfile)
+            print("Header keyword 'BUNIT' not present in "+fitsfile)
             bunit = 'unknown quantity'
     colorbar = kwargs.get('colorbar', ['right',bunit])
     stretch  = kwargs.get('stretch', 'linear')
@@ -318,7 +318,7 @@ def _show_grid_colorbar(fitsfile, main_fig, fig, panels, kwargs):
     if ( 'bunit' in head ):
         bunit = head['bunit']
     else:
-        raise warning("Header keyword 'BUNIT' not present in "+fitsfile)
+        print("Header keyword 'BUNIT' not present in "+fitsfile)
         bunit = 'unknown quantity'
     colorbar = kwargs.get('colorbar', ['right',bunit])        # add the colorbar panel
     cmap     = kwargs.get('cmap', 'viridis')                                   # the recommended cmap
