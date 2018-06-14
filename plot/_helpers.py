@@ -430,7 +430,7 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
             if panel:
                 polygons = polygons[panel['num']]                              # get the correct set of polygons
             for polygon in polygons:
-                fig.show_polygons(polygon_list=[np.array([[p.ra.degree, p.dec.degree] for p in polygon[0]]])], **polygon[1])
+                fig.show_polygons(polygon_list=[np.array([[p.ra.degree, p.dec.degree] for p in polygon[0]])], **polygon[1])
         else:
             raise TypeError("Overlays: Must be list of lists. I.e. a single overlay needs double brackets [[]].")
 
