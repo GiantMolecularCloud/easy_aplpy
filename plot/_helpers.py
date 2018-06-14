@@ -456,6 +456,16 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
     if rectangles:
         raise NotImplementedError("Overplotting rectangles is not supported yet.")
 
+    texts = kwargs.get('texts')
+    if texts:
+        if all(isinstance(x,(list,tuple)) for x in texts):
+            if panel:
+                texts = texts[panel['num']]
+            for text in texts:
+                fig.add_label(x=text[0].ra.degree, y=text[0].dec.degree, text=text[1], **text[2])
+        else:
+            raise TypeError("Overlays: Must be list of lists. I.e. a single overlay needs double brackets [[]].")
+
 
 ###################################################################################################
 
