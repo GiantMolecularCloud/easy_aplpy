@@ -450,7 +450,13 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
 
     lines = kwargs.get('lines')
     if lines:
-        raise NotImplementedError("Overplotting lines is not supported yet.")
+        if all(isinstance(x,(list,tuple)) for x in lines):
+            if panel:
+                lines = lines[panel['num']]                              # get the correct set of lines
+            for line in lines:
+                fig.show_lines(line_list=[np.array([[i.value for i in line[0]], [j.value for j in line[1]]])], **line[2])
+        else:
+            raise TypeError("Overlays: Must be list of lists. I.e. a single overlay needs double brackets [[]].")
 
     rectangles = kwargs.get('rectangles')
     if rectangles:
@@ -462,7 +468,18 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
             if panel:
                 texts = texts[panel['num']]
             for text in texts:
-                fig.add_label(x=text[0].ra.degree, y=text[0].dec.degree, text=text[1], **text[2])
+                if not ( text == [] ):
+                    if isinstance(text[0], SkyCoord):
+                        x = text[0].ra.degree
+                        y = text[0].dec.degree
+                        relative = False
+                    elif isinstance(text[0],(list,tuple)):
+                        x = text[0][0]
+                        y = text[0][1]
+                        relative = True
+                    else:
+                        raise TypeError("Texts need to be a list of [position, text, kwargs] and position must be either a SkyCoord or a list of relative positions [x,y].")
+                    fig.add_label(x=x, y=y, text=text[1], relative=relative, **text[2])
         else:
             raise TypeError("Overlays: Must be list of lists. I.e. a single overlay needs double brackets [[]].")
 
@@ -470,14 +487,28 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
 ###################################################################################################
 
 def _format_grid_ticksNlabels(panel, fig, kwargs):
-    fig.axis_labels.hide()
-    fig.tick_labels.hide()
-    fig.ticks.show()
-    fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
-    fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
-    fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
-    fig.ticks.set_color(easy_aplpy.settings.ticks_color)
-    fig.frame.set_color(easy_aplpy.settings.frame_color)
+    imtype = kwargs.get('imtype')
+    if ( imtype == 'pp' ):
+        fig.ticks.show()
+        fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
+        fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
+        fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_color(easy_aplpy.settings.ticks_color)
+        fig.frame.set_color(easy_aplpy.settings.frame_color)
+        fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
+        fig.axis_labels.hide()
+        fig.tick_labels.hide()
+    if ( imtype == 'pv' ):
+        labels = kwargs.get('labels')
+        if labels:
+            fig.set_axis_labels(labels[0],labels[1])
+        fig.ticks.show()
+        fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_color(easy_aplpy.settings.ticks_color)
+        fig.frame.set_color(easy_aplpy.settings.frame_color)
+        fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
+        fig.axis_labels.hide()
+        fig.tick_labels.hide()
 
     if ( 'left' in panel['position'] ):
         fig.axis_labels.show_y()
@@ -530,20 +561,26 @@ def _show_legend(fitsfile, fig, kwargs):
 
 def _show_channel_label(panel, fig, kwargs):
     channel_label = kwargs.get('channel_label','physical')
-    if ( channel_label == 'physical'):
-        label = ((easy_aplpy.settings.grid_label_format).format(panel['physical'])).replace('km / s','km\,s$^{-1}$')
-    elif ( channel_label == 'number'):
-        label = '{:d}'.format(panel['channel'])
+    if isinstance(channel_label,str):
+        if ( channel_label == 'physical' ):
+            label = ((easy_aplpy.settings.grid_label_format).format(panel['physical'])).replace('km / s','km\,s$^{-1}$')
+        elif ( channel_label == 'number' ):
+            label = '{:d}'.format(panel['channel'])
+    elif ( channel_label == None ):
+        label = False
+    elif isinstance(channel_label,(list,tuple)):
+        label = str(channel_label[panel['num']])
     else:
-        raise TypeError("Unrecognized type of channel_label. Must be 'physical' or 'number'.")
+        raise TypeError("Unrecognized type of channel_label. Must be an instruction ('physical', 'number', None) or a list of strings.")
 
-    fig.add_label(easy_aplpy.settings.grid_label_pos[0],
-        easy_aplpy.settings.grid_label_pos[0],
-        label,
-        color    = easy_aplpy.settings.grid_label_color,
-        relative = True,
-        size     = easy_aplpy.settings.grid_label_fontsize
-        )
+    if label:
+        fig.add_label(easy_aplpy.settings.grid_label_pos[0],
+            easy_aplpy.settings.grid_label_pos[0],
+            label,
+            color    = easy_aplpy.settings.grid_label_color,
+            relative = True,
+            size     = easy_aplpy.settings.grid_label_fontsize
+            )
 
 
 ###################################################################################################
