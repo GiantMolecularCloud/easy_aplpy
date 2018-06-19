@@ -1,7 +1,20 @@
+#####################################################################
+#                          APLPY PLOTTING                           #
+#####################################################################
+# Helper functions to accomodate plotting in a nice way.            #
+#####################################################################
+
+__all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','hide_FITSwarnings','hide_ComparisonWarnings','m_to_km']
+
+
+###################################################################################################
+
+# common imports
+################
+
 import os
 import subprocess
-
-__all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','hide_FITSwarnings','hide_ComparisonWarnings','correct_velo_info']
+from astropy.io import fits
 
 
 ###################################################################################################
@@ -51,7 +64,7 @@ def hide_ComparisonWarnings():
 # correct velocity header
 #########################
 
-def correct_velo_info(pv, overwrite=True):
+def m_to_km(pv, overwrite=False, out=None):
 
     """
     convert_velo_info: scale the velocity axis in pV diagrams
@@ -72,6 +85,9 @@ def correct_velo_info(pv, overwrite=True):
 
     Optional arguments:
         overwrite   True or False. Default: True
+        out         Image name or list of names for output. Default: None
+                    If neither overwrite or out are given ".corrected" is appended
+                    to the file name.
 
     example:
 
@@ -80,36 +96,41 @@ def correct_velo_info(pv, overwrite=True):
         )
     """
 
-    if isinstance(pv, str):
+    if isinstance(pv, str) and isinstance(out, str):
         pv_list = [pv]
-    elif isinstance(pv, (list,tuple)):
+        out_list = [out]
+    elif isinstance(pv, (list,tuple)) and isinstance(out, (list,tuple)):
         pv_list = pv
+        out_list = out
     else:
-        raise TypeError('Input needs to be a single FITS file or list of FITS files.')
+        raise TypeError('Input needs to be a single FITS file or list of FITS files. (And out parameter accordingly.)')
 
-    for this_pv in pv_list:
+    for this_pv, this_out in zip(pv_list,out_list):
 
         # get current velocity unit
-        velounit = subprocess.check_output('gethead cunit2 '+this_pv, shell=True)
+        velounit = fits.open(this_pv)[0].header['cunit2']
 
         # convert to km/s if necessary
-        if (velounit == 'm/s\n'):
+        if (velounit == 'm/s'):
             if (overwrite == False):
-                os.system('cp -r '+this_pv+' '+this_pv+'.corrected')
-                this_pv = this_pv+'.corrected'
+                if not ( this_out == None ):
+                    os.system('cp -r '+this_pv+' '+this_out)
+                    this_pv = this_out
+                else:
+                    os.system('cp -r '+this_pv+' '+this_pv+'.corrected')
+                    this_pv = this_pv+'.corrected'
 
-            crval_old = float(subprocess.check_output('gethead crval2 '+this_pv, shell=True))
-            cdelt_old = float(subprocess.check_output('gethead cdelt2 '+this_pv, shell=True))
-            crval_new = crval_old/1e6
-            cdelt_new = cdelt_old/1e6
-            cunit_new = 'km/s'
-            os.system('sethead -kv CTYPE1=OFFSET CRVAL2='+'{:18.12E}'.format(crval_new)+' CDELT2='+'{:18.12E}'.format(cdelt_new)+' CUNIT2='+cunit_new+' '+this_pv)
             print('Unit is m/s. Corrrecting to km/s: '+this_pv)
+            im = fits.open(this_pv)[0]
+            im.header['cdelt2'] /= 1e6
+            im.header['crval2'] /= 1e6
+            im.header['cunit2'] = 'km/s'
+            fits.writeto(this_pv, data=im.data, header=im.header, overwrite=True)
             print('\tNote that the header is now wrong by a factor of 1e3!')
         elif (velounit == 'km/s\n'):
             print('Unit is km/s already: '+this_pv)
         else:
-            raise TypeError('Unrecognized velocity unit: '+this_pv)
+            raise TypeError('Unrecognized velocity unit "'+str(velounit)+'": '+this_pv)
 
 
 ###################################################################################################
