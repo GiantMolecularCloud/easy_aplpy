@@ -251,14 +251,14 @@ def _show_contours(fitsfile, fig, kwargs, panel=None):
                     fig.show_contour(data=cont[0], levels=cont[1], colors=cont[2])
                 elif len(cont) == 4:
                     # two options when four arguments are given: slice argument (int) as second or kwargs (dict) as last element
-                    if type(cont[1]) is int:
-                        fig.show_contour(data=cont[0], slices=[cont[1]], levels=cont[2], colors=cont[3])
+                    if isinstance(cont[1],(int, np.int64, np.int32)):
+                        fig.show_contour(data=cont[0], slices=[cont[1]], dimensions=[0,1], levels=cont[2], colors=cont[3])
                     elif type(cont[3]) is dict:
                         fig.show_contour(data=cont[0], levels=cont[1], colors=cont[2], **cont[3])
                     else:
                         raise TypeError("Contour: could not interpret contour list.")
                 elif len(cont) == 5:
-                    fig.show_contour(data=cont[0], slices=cont[1], levels=cont[2], colors=cont[3], **cont[4])
+                    fig.show_contour(data=cont[0], slices=cont[1], dimensions=[0,1], levels=cont[2], colors=cont[3], **cont[4])
                 else:
                     raise TypeError("Contour: wrong number or format of contour parameters in contour "+str(cont)+".")
 
