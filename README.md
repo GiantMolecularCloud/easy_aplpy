@@ -67,10 +67,10 @@ Produces this plot:
 
 
 # Settings
-The plotting functions over many keyword arguments to customize the plots, e.g. by adding scalebars or labels.
+The plotting functions offer many keyword arguments to customize the plots, e.g. by adding scalebars or labels.
 General style settings, i.e. settings that do not have to be changed for each plot but maybe once per script or once per project, are stored in a subpackage to be accessed as easy_aplpy.settings.some_setting.
 The default settings are listed in the file settings/_settings.py and can be changed there.
-Within the code you directly change any setting which will affect all subsequent plots.
+Within the code you can directly change any setting which will affect all subsequent plots.
 ```
 import easy_aplpy
 easy_aplpy.settings.some_setting = ...
@@ -80,6 +80,9 @@ Check the auto-completion of easy_aplpy.settings or look at the file settings/_s
 
 
 # Examples
+
+Each plotting function offers many optional parameters for customization. Not all of them are listed in the examples below and some options are probably not self-explanatory. See the python help for the full documentation:
+e.g. `easy_aplpy.plot.map?` or `easy_aplpy.plot.grid?`
 
 ### single map
 plot a single channel of a FITS cube, channel specified as number
