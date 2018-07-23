@@ -37,7 +37,7 @@ Produces this plot:
 
 
 ### easy_aplpy.plot.grid
-A function to easily plot a grid of images, e.g. the channel maps that are often often in radio astronomy.
+A function to easily plot a grid of images, e.g. the channel maps that are often used in radio astronomy.
 
 Running this code:
 ```
