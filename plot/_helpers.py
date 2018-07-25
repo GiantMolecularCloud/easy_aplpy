@@ -142,7 +142,14 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
             pos += 'left'
         if ( idx >= (nrows-1)*ncols ):
             pos += 'bottom'
-        channel,physical = _channel_physical(fitsfile,channel)
+
+        # set channel label type
+        physical = None
+        channel_label = kwargs.get('channel_label','physical')
+        if isinstance(channel_label,str):
+            if ( channel_label == 'physical' ):
+                channel,physical = _channel_physical(fitsfile,channel)
+
         panels.append({'num': idx,
                        'npanels': shape[0]*shape[1],
                        'position': pos,
@@ -493,6 +500,9 @@ def _format_grid_ticksNlabels(panel, fig, kwargs):
     imtype = kwargs.get('imtype')
     if ( imtype == 'pp' ):
         fig.ticks.show()
+        fig.tick_labels.set_xformat(easy_aplpy.settings.tick_label_xformat)
+        fig.tick_labels.set_yformat(easy_aplpy.settings.tick_label_yformat)
+        fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
         fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
         fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
