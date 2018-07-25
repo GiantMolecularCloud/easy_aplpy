@@ -309,10 +309,13 @@ def _show_colorbar(fitsfile, fig, kwargs):
         fig.colorbar.set_location(colorbar[0])
         fig.colorbar.set_axis_label_text(colorbar[1])
         if ( stretch == 'log' ):
-            log_ticks = [float('{:.2f}'.format(round(x,int(-1*np.log10(kwargs['vmin']))))) for x in np.logspace(np.log10(kwargs['vmin']),np.log10(kwargs['vmax']),num=10, endpoint=True)]
+            im = fits.open(fitsfile)[0]
+            vmin = kwargs.get('vmin', np.nanmin(im.data))
+            vmax = kwargs.get('vmax', np.nanmax(im.data))
+            log_ticks = [float('{:.2f}'.format(round(x,int(-1*np.log10(vmin))))) for x in np.logspace(np.log10(vmin),np.log10(vmax),num=10, endpoint=True)]
             fig.colorbar.set_ticks(log_ticks)
-        fig.colorbar.set_font(size=easy_aplpy.settings.colorbar_fontsize)
-        fig.colorbar.set_axis_label_font(size=easy_aplpy.settings.colorbar_fontsize)
+        fig.colorbar.set_font(size=easy_aplpy.settings.colorbar_ticks_fontsize)
+        fig.colorbar.set_axis_label_font(size=easy_aplpy.settings.colorbar_label_fontsize)
         fig.colorbar.set_frame_color(easy_aplpy.settings.frame_color)
 
 
@@ -352,7 +355,7 @@ def _show_grid_colorbar(fitsfile, main_fig, fig, panels, kwargs):
 
         mplcolorbar.set_label(colorbar[1])
         mplcolorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
-        mplcolorbar.ax.tick_params(labelsize=easy_aplpy.settings.colorbar_fontsize)
+        mplcolorbar.ax.tick_params(labelsize=easy_aplpy.settings.colorbar_ticks_fontsize)
 
         from distutils.version import LooseVersion
         if ( LooseVersion(mpl.__version__) < LooseVersion('1.3') ):
@@ -552,9 +555,9 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
 def _show_legend(fitsfile, fig, kwargs):
     legend = kwargs.get('legend')
     if legend:
-        fig._ax1.legend(loc=0, fontsize=easy_aplpy.settings.colorbar_fontsize)
+        fig._ax1.legend(loc=0, fontsize=easy_aplpy.settings.colorbar_label_fontsize)
         if isinstance(legend,dict):
-            fig._ax1.legend(fontsize=easy_aplpy.settings.colorbar_fontsize, **legend)
+            fig._ax1.legend(fontsize=easy_aplpy.settings.colorbar_label_fontsize, **legend)
 
 
 ###################################################################################################

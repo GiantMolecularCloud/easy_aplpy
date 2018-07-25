@@ -134,3 +134,33 @@ def m_to_km(pv, overwrite=False, out=None):
 
 
 ###################################################################################################
+
+# crop whitespace in images
+###########################
+
+# def crop_whitespace(inp):
+#     """
+#     Documentation to be added ...
+#     """
+#
+#
+#
+#     if isinstance(inp, str):
+#         files = [inp]
+#     elif isinstance(inp, (list,tuple)):
+#         files = inp
+#     else:
+#         raise TypeError("Input needs to be a file name or list thereof.")
+#
+#
+#     for img in files:
+#         ftype = img.split('.')[-1]
+#
+#
+#         try:
+#             # convert
+#         else:
+#             raise Exception("`convert` as part of the Imagemagick package is not installed or not recognized.\nMake sure the correct program reacts to `convert` in the default shell.")
+
+
+###################################################################################################
