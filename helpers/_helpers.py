@@ -1,10 +1,11 @@
+from __future__ import print_function
 #####################################################################
 #                          APLPY PLOTTING                           #
 #####################################################################
 # Helper functions to accomodate plotting in a nice way.            #
 #####################################################################
 
-__all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','hide_FITSwarnings','hide_ComparisonWarnings','m_to_km']
+__all__ = ['hide_deprecationWarnings','hide_nonfunctionalWarnings','hide_FITSwarnings','hide_ComparisonWarnings','m_to_km','trim_whitespace']
 
 
 ###################################################################################################
@@ -135,32 +136,64 @@ def m_to_km(pv, overwrite=False, out=None):
 
 ###################################################################################################
 
-# crop whitespace in images
+# trim whitespace in images
 ###########################
 
-# def crop_whitespace(inp):
-#     """
-#     Documentation to be added ...
-#     """
-#
-#
-#
-#     if isinstance(inp, str):
-#         files = [inp]
-#     elif isinstance(inp, (list,tuple)):
-#         files = inp
-#     else:
-#         raise TypeError("Input needs to be a file name or list thereof.")
-#
-#
-#     for img in files:
-#         ftype = img.split('.')[-1]
-#
-#
-#         try:
-#             # convert
-#         else:
-#             raise Exception("`convert` as part of the Imagemagick package is not installed or not recognized.\nMake sure the correct program reacts to `convert` in the default shell.")
+def trim_whitespace(images, dpi=300):
+    """Short summary.
+
+    Parameters
+    ----------
+    images : str or list
+        Single file name or list of file names of the images to be trimmed.
+    dpi : int
+        The image resolution (caled 'density' in imagemagick). Defaults to 300.
+    """
+
+    import random
+
+    # try to import tqdm to get a nice progress bar
+    try:
+        import tqdm
+        check_tqdm = True
+    except:
+        check_tqdm = False
+
+    # check input(s)
+    if isinstance(images, str):
+        imlist = [images]
+    elif isinstance(images, (list,tuple)):
+        imlist = images
+    else:
+        raise TypeError("Input needs to be a file name or list thereof.")
+
+
+    # the function that does the actual work
+    def imagemagick_convert_trim(img):
+        # generate temporary file name
+        tmp = int(1e6*random.random())
+        name, fext = os.path.splitext(img)
+        tmp_fname = 'tmp_'+str(tmp)+fext
+
+        try:
+            os.system('convert -density '+str(dpi)+' -fuzz 1% -trim +repage '+img+' '+tmp_fname)
+            os.system('rm -f '+img)
+            os.system('cp '+tmp_fname+' '+img)
+            os.system('rm -rf '+tmp_fname)
+        except:
+            raise Exception("`convert` as part of the Imagemagick package is not installed or not recognized.\nMake sure the correct program reacts to `convert` in the default shell.")
+
+
+    # use the tqdm progress bar if possible, otherwise count up
+    if check_tqdm:
+        for img in tqdm.tqdm(imlist):
+            imagemagick_convert_trim(img)
+    else:
+        for idx,img in enumerate(imlist):
+            print("triming image "+str(idx+1)+" of "+str(len(imlist))) #, end='\r')
+            imagemagick_convert_trim(img)
+        print("\n")
+
 
 
 ###################################################################################################
