@@ -146,7 +146,7 @@ def grid(fitsfile, shape, channels, **kwargs):
     main_fig = _set_up_grid(fitsfile, shape, kwargs)
     panels = _grid_panels(fitsfile, shape, channels, kwargs)
 
-    fig = None                                                                 # bug fix: py3 does not leak variables anymore
+    global fig                                                                                    # bug fix: py3 does not leak variables anymore
     for panel in panels:
         if ( panel['type'] == 'map' ):
 

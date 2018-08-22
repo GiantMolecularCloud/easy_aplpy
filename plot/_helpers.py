@@ -136,7 +136,7 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
     panels_width  = (1.-margins[0]-margins[1])
     panels_height = (1.-margins[2]-margins[3])
     panels = []
-    panel_idx = None                                                                              # bug fix: py3 does not leak variables anymore
+    global panel_idx                                                                              # bug fix: py3 does not leak variables anymore
     for idx, channel in enumerate(channels):
         panel_idx = idx
         pos = ''
