@@ -121,8 +121,8 @@ def _set_up_panel_figure(main_fig, panel, kwargs):
 ###################################################################################################
 
 def _grid_panels(fitsfile, shape, channels, kwargs):
-    ncols = float(shape[0])                                                    # convert to nrows/ncols to float for python 2 compatibility
-    nrows = float(shape[1])                                                    # convert to nrows/ncols to float for python 2 compatibility
+    ncols = float(shape[0])                                                                       # convert to nrows/ncols to float for python 2 compatibility
+    nrows = float(shape[1])                                                                       # convert to nrows/ncols to float for python 2 compatibility
     head = fits.open(fitsfile)[0].header
     if ( 'bunit' in head ):
         bunit = head['bunit']
@@ -136,7 +136,9 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
     panels_width  = (1.-margins[0]-margins[1])
     panels_height = (1.-margins[2]-margins[3])
     panels = []
+    panel_idx = None                                                                              # bug fix: py3 does not leak variables anymore
     for idx, channel in enumerate(channels):
+        panel_idx = idx
         pos = ''
         if ( idx%ncols == 0 ):
             pos += 'left'
@@ -154,8 +156,8 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
                        'npanels': shape[0]*shape[1],
                        'position': pos,
                        'type': 'map',
-                       'x': margins[0]+(idx%ncols)*panels_width/ncols,                         # lower left corner
-                       'y': (1.-margins[2])-np.ceil((idx+1.)/ncols)*panels_height/nrows,       # lower left corner
+                       'x': margins[0]+(idx%ncols)*panels_width/ncols,                            # lower left corner
+                       'y': (1.-margins[2])-np.ceil((idx+1.)/ncols)*panels_height/nrows,          # lower left corner
                        'width': panels_width/ncols,
                        'height': panels_height/nrows,
                        'file': fitsfile,
@@ -164,7 +166,7 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
                        })
 
     if not colorbar is None:
-        idx = idx+1
+        idx = panel_idx+1                                                                         # bug fix: py3 does not leak variables anymore
         if ( colorbar[0] == 'last panel' ):
             panels.append({'num': idx+1,
                            'npanels': shape[0]*shape[1],
