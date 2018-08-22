@@ -136,9 +136,9 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
     panels_width  = (1.-margins[0]-margins[1])
     panels_height = (1.-margins[2]-margins[3])
     panels = []
-    global panel_idx                                                                              # bug fix: py3 does not leak variables anymore
+    if isinstance(channels,np.ndarray):
+        channels = channels.tolist()
     for idx, channel in enumerate(channels):
-        panel_idx = idx
         pos = ''
         if ( idx%ncols == 0 ):
             pos += 'left'
@@ -166,29 +166,30 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
                        })
 
     if not colorbar is None:
-        idx = panel_idx+1                                                                         # bug fix: py3 does not leak variables anymore
         if ( colorbar[0] == 'last panel' ):
-            panels.append({'num': idx+1,
+            idx = shape[0]*shape[1]-1                                                             # bug fix: py3 does not leak variables anymore
+            panels.append({'num': idx,
                            'npanels': shape[0]*shape[1],
                            'position': None,
                            'type': 'colorbar',
-                           'x': margins[0]+((idx%ncols)+0.05)*panels_width/ncols,                  # lower left corner
-                           'y': (1.-margins[2])-(np.ceil((idx+1.)/ncols)-0.5)*panels_height/nrows, # lower left corner
-                           'width': panels_width/ncols*0.9,                                        # cbar fills 90% of panel width
-                           'height': panels_height/nrows*easy_aplpy.settings.colorbar_width,       # cbar height is specified fraction of panel height
+                           'x': margins[0]+((idx%ncols)+0.05)*panels_width/ncols,                 # lower left corner
+                           'y': (1.-margins[2])-(np.ceil((idx+1.)/ncols)-0.5)*panels_height/nrows,# lower left corner
+                           'width': panels_width/ncols*0.9,                                       # cbar fills 90% of panel width
+                           'height': panels_height/nrows*easy_aplpy.settings.colorbar_width,      # cbar height is specified fraction of panel height
                            'file': fitsfile,
                            'channel': None,
                            'physical': None
                            })
         if ( colorbar[0] == 'right' ):
-            panels.append({'num': idx+1,
+            idx = shape[0]*shape[1]                                                               # bug fix: py3 does not leak variables anymore
+            panels.append({'num': shape[0]*shape[1],
                            'npanels': shape[0]*shape[1],
                            'position': None,
                            'type': 'colorbar',
-                           'x': margins[0]+((idx%ncols)+ncols)*panels_width/ncols,                 # lower left corner
-                           'y': (1.-margins[2])-(np.ceil((idx+1.)/ncols)-1.)*panels_height/nrows,  # lower left corner
-                           'width': panels_width/ncols*easy_aplpy.settings.colorbar_width,         # cbar width is specified fraction of panel width
-                           'height': panels_height/nrows,                                          # cbar is as high as panels
+                           'x': margins[0]+((idx%ncols)+ncols)*panels_width/ncols,                # lower left corner
+                           'y': (1.-margins[2])-(np.ceil((idx+1.)/ncols)-1.)*panels_height/nrows, # lower left corner
+                           'width': panels_width/ncols*easy_aplpy.settings.colorbar_width,        # cbar width is specified fraction of panel width
+                           'height': panels_height/nrows,                                         # cbar is as high as panels
                            'file': fitsfile,
                            'channel': None,
                            'physical': None
@@ -330,7 +331,7 @@ def _show_colorbar(fitsfile, fig, kwargs):
 
 ###################################################################################################
 
-def _show_grid_colorbar(fitsfile, main_fig, fig, panels, kwargs):
+def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
     head = fits.open(fitsfile)[0].header
     if ( 'bunit' in head ):
         bunit = head['bunit']

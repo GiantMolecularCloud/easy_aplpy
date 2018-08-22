@@ -146,7 +146,6 @@ def grid(fitsfile, shape, channels, **kwargs):
     main_fig = _set_up_grid(fitsfile, shape, kwargs)
     panels = _grid_panels(fitsfile, shape, channels, kwargs)
 
-    global fig                                                                                    # bug fix: py3 does not leak variables anymore
     for panel in panels:
         if ( panel['type'] == 'map' ):
 
@@ -162,7 +161,7 @@ def grid(fitsfile, shape, channels, **kwargs):
             _show_scalebar(panel['file'], fig, kwargs, panel)
             _execute_code(panel['file'], fig, kwargs, panel)
 
-    _show_grid_colorbar(fitsfile, main_fig, fig, panels, kwargs)
+    _show_grid_colorbar(fitsfile, main_fig, panels, kwargs)
     #_show_grid_legend(panel['file'], fig, kwargs)
     _save_figure(fitsfile, main_fig, kwargs)
 
