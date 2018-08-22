@@ -1,4 +1,4 @@
-test_data/cube.fits
+test_data/*.fits
 test_data/auto_testing
 test_data/*.py
 *.DS_Store
