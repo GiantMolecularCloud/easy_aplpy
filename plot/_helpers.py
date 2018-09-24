@@ -590,7 +590,7 @@ def _show_channel_label(panel, fig, kwargs):
 
     if label:
         fig.add_label(easy_aplpy.settings.grid_label_pos[0],
-            easy_aplpy.settings.grid_label_pos[0],
+            easy_aplpy.settings.grid_label_pos[1],
             label,
             color    = easy_aplpy.settings.grid_label_color,
             relative = True,
