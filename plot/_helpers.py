@@ -5,7 +5,7 @@
 # pV diagrams, ... in a quality that (hopefully) allows publishing. #
 #####################################################################
 
-__all__ = ['_check_image_type','_set_up_figure','_set_up_grid','_set_up_panel_figure','_grid_panels','_show_map','_recenter_plot','_test_recenter_format','_show_contours','_overplot_regions','_show_colorbar','_show_grid_colorbar','_show_scalebar','_show_beam','_show_label','_show_overlays','_format_grid_ticksNlabels','_show_ticksNlabels','_show_legend','_show_channel_label','_execute_code','_save_figure']
+__all__ = ['_check_image_type','_set_up_figure','_set_up_grid','_set_up_panel_figure','_grid_panels','_show_map','_recenter_plot','_test_recenter_format','_show_contours','_overplot_regions','_show_colorbar','_show_grid_colorbar','_show_scalebar','_show_beam','_show_label','_show_overlays','_format_grid_ticksNlabels','_show_ticksNlabels','_show_legend','_show_channel_label','_save_figure']
 
 
 ###################################################################################################
@@ -136,8 +136,8 @@ def _grid_panels(fitsfile, shape, channels, kwargs):
     panels_width  = (1.-margins[0]-margins[1])
     panels_height = (1.-margins[2]-margins[3])
     panels = []
-    if isinstance(channels,np.ndarray):
-        channels = channels.tolist()
+    # if isinstance(channels,np.ndarray):               # I can't remember which problem made this step necessary
+    #     channels = channels.tolist()                  # but now it causes more harm than good
     for idx, channel in enumerate(channels):
         pos = ''
         if ( idx%ncols == 0 ):
@@ -526,12 +526,21 @@ def _format_grid_ticksNlabels(panel, fig, kwargs):
         fig.axis_labels.hide()
         fig.tick_labels.hide()
 
-    if ( 'left' in panel['position'] ):
-        fig.axis_labels.show_y()
-        fig.tick_labels.show_y()
-    if ( 'bottom' in panel['position'] ):
-        fig.axis_labels.show_x()
-        fig.tick_labels.show_x()
+    # show axis and tick labels on all panels
+    if ( easy_aplpy.settings.grid_label_all ):
+        if ( 'left' in panel['position'] ):
+            fig.axis_labels.show_y()
+            fig.tick_labels.show_y()
+        if ( 'bottom' in panel['position'] ):
+            fig.axis_labels.show_x()
+            fig.tick_labels.show_x()
+    # or just in the bottom left panel
+    else:
+        if ( 'left' in panel['position'] and 'bottom' in panel['position'] ):
+            fig.axis_labels.show_x()
+            fig.tick_labels.show_x()
+            fig.axis_labels.show_y()
+            fig.tick_labels.show_y()
 
 
 ###################################################################################################
@@ -601,16 +610,16 @@ def _show_channel_label(panel, fig, kwargs):
 
 ###################################################################################################
 
-def _execute_code(fitsfile, fig, kwargs, panel=None):
-    execute_code = kwargs.get('execute_code')
-    if execute_code:
-        if isinstance(execute_code, (list,tuple)):
-            if panel:
-                execute_code = execute_code[panel['num']]
-            for codes in execute_code:
-                exec(codes) in locals()
-        else:
-            raise TypeError("Execute code: Code to execute must be given in a list of strings")
+# def _execute_code(fitsfile, fig, kwargs, panel=None):
+#     execute_code = kwargs.get('execute_code')
+#     if execute_code:
+#         if isinstance(execute_code, (list,tuple)):
+#             if panel:
+#                 execute_code = execute_code[panel['num']]
+#             for codes in execute_code:
+#                 exec(codes) in locals()
+#         else:
+#             raise TypeError("Execute code: Code to execute must be given in a list of strings")
 
 
 ###################################################################################################

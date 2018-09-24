@@ -89,7 +89,7 @@ def grid(fitsfile, shape, channels, **kwargs):
                     colorbar as the last panel or to the right of the last panel, respectively.
 
         scalebar    Show a scalebar. Must be a list of length, label and position given as
-                    astropy.units, string and string. E.g. ['1.0*u.arcsec', '10pc','bottom left'].
+                    astropy.units, string and string. E.g. [1.0*u.arcsec, '10pc','bottom left'].
 
         beam        Plot a beam ellipse as given in the fits header at this position in the plot.
                     Defaults to 'bottom right'. Turn off by beam=None.
@@ -103,7 +103,7 @@ def grid(fitsfile, shape, channels, **kwargs):
                     which can also be empty if you do not want to provide e.g. linewidth or style.
                     You can draw an arbitrary list of overlays in each panel. If no overlays should
                     be plotted in a particular panel just give an empty list. Structure:
-                    [[[panel1/olay1],[panel1/olay]], [[panel2/olay],[panel2/olay2]], ... ]
+                    [[[panel1/olay1],[panel1/olay2]], [[panel2/olay1],[panel2/olay2]], ... ]
                     Also see example below.
 
     General style settings
@@ -159,7 +159,8 @@ def grid(fitsfile, shape, channels, **kwargs):
             _overplot_regions(panel['file'], fig, kwargs, panel)
             _show_overlays(panel['file'], fig, kwargs, panel)
             _show_scalebar(panel['file'], fig, kwargs, panel)
-            _execute_code(panel['file'], fig, kwargs, panel)
+#            _execute_code(panel['file'], fig, kwargs, panel)       # unsafe and should not be used
+                                                                    # also not necessary anymore because figure instance is returned to user
 
     _show_grid_colorbar(fitsfile, main_fig, panels, kwargs)
     #_show_grid_legend(panel['file'], fig, kwargs)

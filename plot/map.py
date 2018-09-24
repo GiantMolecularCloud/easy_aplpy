@@ -169,7 +169,8 @@ def map(fitsfile, **kwargs):
     _show_overlays(fitsfile, fig, kwargs)
     _show_ticksNlabels(fitsfile, fig, kwargs)
     _show_legend(fitsfile, fig, kwargs)
-    _execute_code(fitsfile, fig, kwargs)
+#    _execute_code(panel['file'], fig, kwargs, panel)       # unsafe and should not be used
+                                                            # also not necessary anymore because figure instance is returned to user
     _save_figure(fitsfile, fig, kwargs)
 
     return fig
