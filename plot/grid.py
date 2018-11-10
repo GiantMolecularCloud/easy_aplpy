@@ -151,16 +151,14 @@ def grid(fitsfile, shape, channels, **kwargs):
 
             fig = _set_up_panel_figure(main_fig, panel, kwargs)
             _show_map(panel['file'], fig, kwargs)
-            _recenter_plot(panel['file'], fig, kwargs)
             _show_beam(panel['file'], fig, kwargs)
-            _format_grid_ticksNlabels(panel, fig, kwargs)
             _show_channel_label(panel, fig, kwargs)
             _show_contours(panel['file'], fig, kwargs, panel)
             _overplot_regions(panel['file'], fig, kwargs, panel)
             _show_overlays(panel['file'], fig, kwargs, panel)
             _show_scalebar(panel['file'], fig, kwargs, panel)
-#            _execute_code(panel['file'], fig, kwargs, panel)       # unsafe and should not be used
-                                                                    # also not necessary anymore because figure instance is returned to user
+            _format_grid_ticksNlabels(panel, fig, kwargs)
+            _recenter_plot(panel['file'], fig, kwargs)              # recenter needs to be last, otherwise label hiding does not work!
 
     _show_grid_colorbar(fitsfile, main_fig, panels, kwargs)
     #_show_grid_legend(panel['file'], fig, kwargs)
