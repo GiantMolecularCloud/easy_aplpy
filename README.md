@@ -3,6 +3,9 @@ Baking a publication quality plot can involve a fair bit of code. Easy APLpy can
 
 For details on APLpy see https://github.com/aplpy/aplpy
 
+<aside class="warning">
+   Warning: matplotlib 3.0.1 breaks aplpy and thus easy_aplpy!
+</aside>
 
 
 ## Table of Contents
