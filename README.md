@@ -4,9 +4,10 @@ Baking a publication quality plot can involve a fair bit of code. Easy APLpy can
 For details on APLpy see https://github.com/aplpy/aplpy
 
 | WARNING: matplotlib 3.0.0 & 3.0.1 break aplpy and thus easy_aplpy! |
-| Install matplotlib 3.0.2 to make colorbars work again. |
-| 3.0.2 is not yet available through conda but is listed in pip (14 Nov 2018). |
 |--|
+
+Install matplotlib 3.0.2 to make colorbars work again.
+3.0.2 is not yet available through conda but is listed in pip (14 Nov 2018).
 
 
 ## Table of Contents
