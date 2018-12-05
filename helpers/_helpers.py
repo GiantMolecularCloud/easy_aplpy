@@ -97,6 +97,7 @@ def m_to_km(pv, overwrite=False, out=None):
         )
     """
 
+    out = kwargs.get('out', pv)
     if isinstance(pv, str) and isinstance(out, str):
         pv_list = [pv]
         out_list = [out]
