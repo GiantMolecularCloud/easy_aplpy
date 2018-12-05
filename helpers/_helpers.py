@@ -85,7 +85,7 @@ def m_to_km(pv, overwrite=False, out=None):
                     of multiple FITS images.
 
     Optional arguments:
-        overwrite   True or False. Default: True
+        overwrite   True or False. Default: False
         out         Image name or list of names for output. Default: None
                     If neither overwrite or out are given ".corrected" is appended
                     to the file name.
@@ -122,7 +122,6 @@ def m_to_km(pv, overwrite=False, out=None):
             if (overwrite == False):
                 if not ( this_out == None ):
                     os.system('cp -r '+this_pv+' '+this_out)
-                    this_pv = this_out
                 else:
                     os.system('cp -r '+this_pv+' '+this_pv+'.corrected')
                     this_pv = this_pv+'.corrected'
