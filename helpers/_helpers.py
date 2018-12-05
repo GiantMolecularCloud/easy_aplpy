@@ -97,13 +97,18 @@ def m_to_km(pv, overwrite=False, out=None):
         )
     """
 
-    out = kwargs.get('out', pv)
-    if isinstance(pv, str) and isinstance(out, str):
+    if isinstance(pv, str):
         pv_list = [pv]
-        out_list = [out]
-    elif isinstance(pv, (list,tuple)) and isinstance(out, (list,tuple)):
+        if isinstance(out, str):
+            out_list = [out]
+        else:
+            out_list = [None]
+    elif isinstance(pv, (list,tuple)):
         pv_list = pv
-        out_list = out
+        if isinstance(out, (list,tuple)):
+            out_list = out
+        else:
+            out_list = [None for i in pv_list]
     else:
         raise TypeError('Input needs to be a single FITS file or list of FITS files. (And out parameter accordingly.)')
 
