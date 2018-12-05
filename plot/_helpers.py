@@ -51,7 +51,7 @@ def _check_image_type(fitsfile, kwargs):
 
 def _set_up_figure(fitsfile, kwargs):
     print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting map "+fitsfile)
-    figsize = kwargs.get('figsize', None)     # A4 in inches: (8.267,11.692)``
+    figsize = kwargs.get('figsize', None)     # A4 in inches: (8.267,11.692)
     channel = kwargs.get('channel', None)
     if ( channel == None ):
         with warnings.catch_warnings():
@@ -363,7 +363,7 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
         else:
             raise NotImplementedError("Scalings other than 'linear' and 'log' are not supported yet for grid plots.")
 
-        mplcolorbar.set_label(colorbar[1])
+        mplcolorbar.set_label(colorbar[1], size=easy_aplpy.settings.colorbar_label_fontsize)
         mplcolorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
         mplcolorbar.ax.tick_params(labelsize=easy_aplpy.settings.colorbar_ticks_fontsize)
 
