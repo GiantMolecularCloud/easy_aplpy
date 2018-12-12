@@ -133,7 +133,7 @@ def m_to_km(pv, overwrite=False, out=None):
             im.header['cunit2'] = 'km/s'
             fits.writeto(this_pv, data=im.data, header=im.header, overwrite=True)
             print('\tNote that the header is now wrong by a factor of 1e3!')
-        elif (velounit == 'km/s\n'):
+        elif (velounit == 'km/s'):
             print('Unit is km/s already: '+this_pv)
         else:
             raise TypeError('Unrecognized velocity unit "'+str(velounit)+'": '+this_pv)

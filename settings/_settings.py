@@ -26,7 +26,6 @@ ticks_minor_frequency = 5
 # fixed settings, i.e. settings that should be the same for each and every plot
 # these can still be changed if necessary
 colorbar_label_fontsize = 10      		# unit: point
-colorbar_ticks_fontsize = 10      		# unit: point
 colorbar_width        = 0.10	        # relative to panel height
 scalebar_frame        = False
 scalebar_linestyle    = 'solid'	        # or any other plt.plot linestyle
