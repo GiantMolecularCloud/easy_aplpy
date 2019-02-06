@@ -204,12 +204,13 @@ def _show_map(fitsfile, fig, kwargs):
     stretch  = kwargs.get('stretch', 'linear')
     vmin     = kwargs.get('vmin')                                              # no default, aplpy scales automatically
     vmax     = kwargs.get('vmax')                                              # no default, aplpy scales automatically
+    vmid     = kwargs.get('vmid')                                              # no default, aplpy scales automatically
     imtype = kwargs.get('imtype')
     if ( imtype == 'pv'):
         aspect = 'auto'
     else:
         aspect = 'equal'
-    fig.show_colorscale(cmap=cmap, vmin=vmin, vmax=vmax, stretch=stretch, aspect=aspect)
+    fig.show_colorscale(cmap=cmap, vmin=vmin, vmid=vmid, vmax=vmax, stretch=stretch, aspect=aspect)
 
 
 ###################################################################################################
