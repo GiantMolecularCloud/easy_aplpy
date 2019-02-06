@@ -344,6 +344,7 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
     stretch  = kwargs.get('stretch', 'linear')
     vmin     = kwargs.get('vmin')                                              # no default, aplpy scales automatically
     vmax     = kwargs.get('vmax')
+    vmid     = kwargs.get('vmax')
     if not colorbar is None:
         cbpnl = panels[-1]
         ax1 = main_fig.add_axes([cbpnl['x'],cbpnl['y'],cbpnl['width'],cbpnl['height']])
@@ -357,7 +358,9 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
         if (stretch == 'linear'):
             mplcolorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), orientation=orientation)
         elif (stretch == 'log'):
-            log_ticks = [float('{:.2f}'.format(x)) for x in np.logspace(np.log10(kwargs['vmin']),np.log10(kwargs['vmax']),num=5, endpoint=True)]
+            if not (vmid == None):
+                vmin = vmid
+            log_ticks = [float('{:.2f}'.format(x)) for x in np.logspace(np.log10(vmin),np.log10(vmax),num=5, endpoint=True)]
             mplcolorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.LogNorm(vmin=vmin, vmax=vmax), ticks=log_ticks, orientation=orientation)
             mplcolorbar.set_ticks(log_ticks)
             mplcolorbar.set_ticklabels(['{:.2f}'.format(x) for x in log_ticks])
