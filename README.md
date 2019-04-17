@@ -3,12 +3,14 @@ Baking a publication quality plot can involve a fair bit of code. Easy APLpy can
 
 For details on APLpy see https://github.com/aplpy/aplpy
 
-| WARNING: matplotlib 3.0.0 & 3.0.1 break aplpy and thus easy_aplpy! |
+| WARNING: easy_aplpy is not compatible with APLpy 2. It is not clear yet if the additional functionality of easy_aplpy (e.g. legends for contours) can be implemented with APLpy 2. |
 |--|
 
-Install matplotlib 3.0.2 to make colorbars work again.
-3.0.2 is not yet available through conda but is listed in pip (14 Nov 2018).
+| WARNING: Version 1.1.1 of APLpy has problems plotting the beam which also affects easy_aplpy |
+|--|
+Use either an older version of APLpy or explicitely set beam=None when plotting. The default in easy_aplpy is to plot a beam when available in the header, so not specifying the beam when using APLpy 1.1.1 will result in an error. This problem will hopefully be fixed in APLpy soon.
 
+Note: easy_aplpy requires matplotlib >= 3.0.2 or <3.0 as versions 3.0.0 & 3.0.1 break APLpy and thus easy_aplpy.
 
 ## Table of Contents
 
