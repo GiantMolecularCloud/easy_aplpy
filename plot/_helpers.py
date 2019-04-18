@@ -83,8 +83,6 @@ def _channel_physical(fitsfile, user_channel):
     for i in np.arange(1,naxis+1):
         if header['cunit'+str(i)] in ['m/s','km/s','Hz','kHz','MHz','GHz']:
             freqax = str(i)
-        else:
-            raise Warning("Could not determine frequency unit. Please add it to the fits image.")
     if not freqax:
         raise TypeError("Could not find a velocity/frequency axis in the input image.")
     crval = u.Quantity(str(header['crval'+freqax])+header['cunit'+freqax])
