@@ -62,6 +62,15 @@ def _set_up_figure(fitsfile, kwargs):
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore")
             fig = aplpy.FITSFigure(fitsfile, slices=[channel], figsize=figsize)
+    # l = fig._ax1.figure.subplotpars.left
+    # r = fig._ax1.figure.subplotpars.right
+    # t = fig._ax1.figure.subplotpars.top
+    # b = fig._ax1.figure.subplotpars.bottom
+    # w = figsize[0]
+    # h = figsize[1]
+    # figw = float(w)/(r-l)
+    # figh = float(h)/(t-b)
+    # fig._ax1.figure.set_size_inches(figw, figh)       # set absolute size for the region containing the map
     return fig
 
 
@@ -74,6 +83,8 @@ def _channel_physical(fitsfile, user_channel):
     for i in np.arange(1,naxis+1):
         if header['cunit'+str(i)] in ['m/s','km/s','Hz','kHz','MHz','GHz']:
             freqax = str(i)
+        else:
+            raise Warning("Could not determine frequency unit. Please add it to the fits image.")
     if not freqax:
         raise TypeError("Could not find a velocity/frequency axis in the input image.")
     crval = u.Quantity(str(header['crval'+freqax])+header['cunit'+freqax])
@@ -320,8 +331,10 @@ def _show_colorbar(fitsfile, fig, kwargs):
     if not colorbar is None:
         fig.add_colorbar()
         fig.colorbar.show()
+        # fig.colorbar.set_box([0.8, 0., 0.02, 1.])  #, box_orientation='vertical')      # screws up the colorbar!
         fig.colorbar.set_location(colorbar[0])
         fig.colorbar.set_axis_label_text(colorbar[1])
+        fig.colorbar.set_axis_label_pad(easy_aplpy.settings.colorbar_labelpad)
         if ( stretch == 'log' ):
             im = fits.open(fitsfile)[0]
             vmin = kwargs.get('vmin', np.nanmin(im.data))
@@ -371,7 +384,7 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
         else:
             raise NotImplementedError("Scalings other than 'linear' and 'log' are not supported yet for grid plots.")
 
-        mplcolorbar.set_label(colorbar[1], size=easy_aplpy.settings.colorbar_label_fontsize)
+        mplcolorbar.set_label(colorbar[1], size=easy_aplpy.settings.colorbar_label_fontsize, labelpad=easy_aplpy.settings.colorbar_labelpad)
         mplcolorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
         mplcolorbar.ax.tick_params(labelsize=easy_aplpy.settings.colorbar_label_fontsize)
 
@@ -394,6 +407,8 @@ def _show_scalebar(fitsfile, fig, kwargs, panel=None):
             fig.scalebar.set_linestyle(easy_aplpy.settings.scalebar_linestyle)
             fig.scalebar.set_linewidth(easy_aplpy.settings.scalebar_linewidth)
             fig.scalebar.set_color(easy_aplpy.settings.scalebar_color)
+    else:
+        raise Warning("scalebar is no list of length 3.")
 
 
 ###################################################################################################
@@ -518,6 +533,7 @@ def _format_grid_ticksNlabels(panel, fig, kwargs):
         fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
         fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_length(easy_aplpy.settings.tick_length)
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
@@ -529,6 +545,7 @@ def _format_grid_ticksNlabels(panel, fig, kwargs):
             fig.set_axis_labels(labels[0],labels[1])
         fig.ticks.show()
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_length(easy_aplpy.settings.tick_length)
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
@@ -566,6 +583,7 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
         fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
         fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_length(easy_aplpy.settings.tick_length)
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
@@ -577,6 +595,7 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
         fig.ticks.show()
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
+        fig.ticks.set_length(easy_aplpy.settings.tick_length)
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)

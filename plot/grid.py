@@ -142,9 +142,10 @@ def grid(fitsfile, shape, channels, **kwargs):
         )
     """
 
-    kwargs = _check_image_type(fitsfile, kwargs)
+    kwargs   = _check_image_type(fitsfile, kwargs)
     main_fig = _set_up_grid(fitsfile, shape, kwargs)
-    panels = _grid_panels(fitsfile, shape, channels, kwargs)
+    panels   = _grid_panels(fitsfile, shape, channels, kwargs)
+    subfigs  = []
 
     for panel in panels:
         if ( panel['type'] == 'map' ):
@@ -159,12 +160,13 @@ def grid(fitsfile, shape, channels, **kwargs):
             _show_scalebar(panel['file'], fig, kwargs, panel)
             _format_grid_ticksNlabels(panel, fig, kwargs)
             _recenter_plot(panel['file'], fig, kwargs)              # recenter needs to be last, otherwise label hiding does not work!
+            subfigs.append(fig)
 
     _show_grid_colorbar(fitsfile, main_fig, panels, kwargs)
     #_show_grid_legend(panel['file'], fig, kwargs)
     _save_figure(fitsfile, main_fig, kwargs)
 
-    return main_fig
+    return main_fig,subfigs
 
 
 ###################################################################################################
