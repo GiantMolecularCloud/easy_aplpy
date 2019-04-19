@@ -10,7 +10,34 @@
 from astropy.coordinates import Angle as Angle
 from astropy import units as u
 
-__all__ = ['tick_label_xformat','tick_label_yformat','ticks_xspacing','ticks_yspacing','ticks_minor_frequency','colorbar_label_fontsize','colorbar_width','scalebar_frame','scalebar_linestyle','scalebar_linewidth','scalebar_color','scalebar_fontsize','beam_frame','beam_color','ticks_color','frame_color','tick_label_fontsize','axis_label_fontsize','grid_label_pos','grid_label_color','grid_label_fontsize','grid_label_format','grid_label_all','margins','props']
+__all__ = ['tick_label_xformat',
+           'tick_label_yformat',
+           'ticks_xspacing',
+           'ticks_yspacing',
+           'ticks_minor_frequency',
+           'colorbar_label_fontsize',
+           'colorbar_width',
+           'colorbar_labelpad',
+           'scalebar_frame',
+           'scalebar_linestyle',
+           'scalebar_linewidth',
+           'scalebar_color',
+           'scalebar_fontsize',
+           'beam_frame',
+           'beam_color',
+           'ticks_color',
+           'frame_color',
+           'tick_label_fontsize',
+           'axis_label_fontsize',
+           'tick_length',
+           'grid_label_pos',
+           'grid_label_color',
+           'grid_label_fontsize',
+           'grid_label_format',
+           'grid_label_all',
+           'margins',
+           'props'
+          ]
 
 
 ###################################################################################################

@@ -396,17 +396,18 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
 ###################################################################################################
 
 def _show_scalebar(fitsfile, fig, kwargs, panel=None):
-    scalebar = kwargs.get('scalebar')
-    if isinstance(scalebar,list) and ( len(scalebar) == 3 ):
-        if ( panel == None ) or ( ('left' in panel['position']) and ('bottom' in panel['position']) ):
-            #TODO allow user to define in which panel the scalebar should be drawn
-            fig.add_scalebar(length=scalebar[0].to(u.degree).value, label=scalebar[1], corner=scalebar[2], frame=easy_aplpy.settings.scalebar_frame)
-            fig.scalebar.set_font(size=easy_aplpy.settings.scalebar_fontsize)
-            fig.scalebar.set_linestyle(easy_aplpy.settings.scalebar_linestyle)
-            fig.scalebar.set_linewidth(easy_aplpy.settings.scalebar_linewidth)
-            fig.scalebar.set_color(easy_aplpy.settings.scalebar_color)
-    else:
-        raise Warning("scalebar is no list of length 3.")
+    scalebar = kwargs.get('scalebar', None)
+    if not scalebar is None:
+        if isinstance(scalebar,list) and ( len(scalebar) == 3 ):
+            if ( panel == None ) or ( ('left' in panel['position']) and ('bottom' in panel['position']) ):
+                #TODO allow user to define in which panel the scalebar should be drawn
+                fig.add_scalebar(length=scalebar[0].to(u.degree).value, label=scalebar[1], corner=scalebar[2], frame=easy_aplpy.settings.scalebar_frame)
+                fig.scalebar.set_font(size=easy_aplpy.settings.scalebar_fontsize)
+                fig.scalebar.set_linestyle(easy_aplpy.settings.scalebar_linestyle)
+                fig.scalebar.set_linewidth(easy_aplpy.settings.scalebar_linewidth)
+                fig.scalebar.set_color(easy_aplpy.settings.scalebar_color)
+        else:
+            raise Warning("scalebar is no list of length 3.")
 
 
 ###################################################################################################
@@ -417,7 +418,6 @@ def _show_beam(fitsfile, fig, kwargs):
     if not ( beam is None ) and not ( imtype == 'pv' ):
         fig.add_beam()
         fig.beam.show()
-        # fig.show_beam()
         fig.beam.set_corner(beam)
         fig.beam.set_frame(easy_aplpy.settings.beam_frame)
         fig.beam.set_color(easy_aplpy.settings.beam_color)
