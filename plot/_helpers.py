@@ -481,7 +481,20 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
 
     ellipses = kwargs.get('ellipses')
     if ellipses:
-        raise NotImplementedError("Overplotting ellipses is not supported yet.")
+        if all(isinstance(x,(list,tuple)) for x in ellipses):
+            if panel:
+                ellipses = ellipses[panel['num']]                                # get the correct set of ellipses
+            for ellipse in ellipses:
+                fig.show_ellipses(ellipse[0].ra.degree, ellipse[0].dec.degree, ellipse[1].to(u.degree).value, ellipse[2].to(u.degree).value, angle=ellipse[3].to(u.degree).value, **ellipse[4])
+                # not working in APLpy 1.1.1:
+                # if isinstance(ellipse[0],SkyCoord):
+                #     fig.show_ellipses(ellipse[0].ra.degree, ellipse[0].dec.degree, ellipse[1].to(u.degree).value, ellipse[2].to(u.degree).value, angle=ellipse[3].to(u.degree).value, coords_frame='world', **ellipse[4])
+                # elif isinstance(ellipse[0], (list,tuple)):
+                #     fig.show_ellipses(ellipse[0].ra.degree, ellipse[0].dec.degree, ellipse[1].to(u.degree).value, ellipse[2].to(u.degree).value, angle=ellipse[3].to(u.degree).value, coords_frame='pixel', **ellipse[4])
+                # else:
+                #     raise TypeError("Ellipse: Cannot determine if world coordinates or relative. Give either SkyCoord or list of relative coordinates as first element.")
+        else:
+            raise TypeError("Overlays: Must be list of lists. I.e. a single overlay needs double brackets [[]].")
 
     lines = kwargs.get('lines')
     if lines:
