@@ -15,7 +15,6 @@ pV diagrams, ... in a quality that (hopefully) allows publishing.
 
 from . import helpers
 from . import plot
-from . import movie
 from . import settings
 from . import custom_colormaps
 
