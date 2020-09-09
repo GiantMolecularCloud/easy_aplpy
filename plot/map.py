@@ -42,7 +42,8 @@ def map(fitsfile, **kwargs):
 
     Optional arguments:
         out         Path and file name of the created plot. If not specified, the plot will be
-                    saved as png where the input image is located.
+                    saved as png where the input image is located. Use None to not save the
+                    figure. This can be useful for interactive plotting in jupyter notebooks.
                     OR dictionary specifying matplotlib.figure.save parameters.
 
         channel     The channel to be plotted if fitsfile is a data cube instead of a 2D image.

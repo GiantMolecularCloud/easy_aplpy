@@ -669,9 +669,13 @@ def _save_figure(fitsfile, fig, kwargs):
     if isinstance(out,str):
         fig.savefig(out, dpi=300, transparent=True, adjust_bbox=True)
         print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out)
-    if isinstance(out,dict):
+    elif isinstance(out,dict):
         fig.savefig(**out)
         print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out['filename'])
+    elif out==None:
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m not saving plot as requested")
+    else:
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m Not saving plot. Give file name to save.")
 
 
 ###################################################################################################
