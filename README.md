@@ -102,6 +102,7 @@ easy_aplpy.settings.some_setting = ...
 Often used settings are tick_label_xformat, ticks_xspacing and the corresponding settings for y.
 Check the auto-completion of easy_aplpy.settings or look at the file settings/_settings.py to see what can be changed.
 
+The plotting functions return an APLpy FITSFigure object that can be further customized with the usual APLpy functions. This is to allow further customization that is not possible with the easy_aplpy convenience functions. Note that APLpy 2 severly limited the customization options by blocking access to the underlying matplotlib objects and thus breaking easy_aplpy.
 
 # Examples
 
