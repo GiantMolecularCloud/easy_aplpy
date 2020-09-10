@@ -58,7 +58,24 @@ Produces this plot:
 
 
 # Installation:
-- Requirements: astropy, aplpy
+Dependencies: astropy, aplpy
+
+## Install with pip:
+- install the master branch
+```
+python -m pip install git+https://github.com/GiantMolecularCloud/easy_aplpy.git
+```
+- or install a specific branch or commit by specifying it at the end, e.g., the development branch.
+```
+python -m pip install git+https://github.com/GiantMolecularCloud/easy_aplpy.git@development
+```
+- import easy_aplpy and run code
+    ```
+    import easy_aplpy
+    easy_aplpy.plot.map(...)
+    ```
+
+## Install manually:
 - clone this repository or download the scripts
 - add the path where the file are located to your python path
     ```
