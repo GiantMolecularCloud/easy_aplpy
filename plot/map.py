@@ -74,8 +74,10 @@ def map(fitsfile, **kwargs):
         contours    List of contour elements. Each contour element must be a list of 'image file',
                     list of contour levels and list of colors for each contour. If only one color
                     is given, it will be used for all contours. When specifying a fits cube, you
-                    have to provide the slice to be used as second list element. Valid mpl.contour
-                    kwargs to fromat the contour can be given as last list element.
+                    have to provide the slice to be used as second list element. This must be done
+                    even when the third axis (spectral or stokes) of the cube is degenerate and
+                    contains only a single plane. Valid mpl.contour kwargs to format the contour can
+                    be given as last list element.
         clabel      Draw labels on the contours? Needs contours to be present. Either set to True
                     to use the matplotlib defaults or give a dictionary with allowed mpl.axes.clabel
                     arguments. Tip: Use clabel={'fmt': '%i'} to get labels without trailing zeros.
