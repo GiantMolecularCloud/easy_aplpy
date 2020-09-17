@@ -98,6 +98,11 @@ def map(fitsfile, **kwargs):
                     what type of overlay needs which information. Positions and lengths need to be
                     given as SkyCoord and astropy.units. The last element needs to be a kwarg dict
                     which can also be empty if you do not want to provide e.g. linewidth or style.
+        tests       List of text overlay elements. Each text overlay elements should give position,
+                    text (as a string) and a text formatting dictionary. The position can be a
+                    SkyCoord object or a list of relative coordinates in the figure (e.g. [0.1,0.1]
+                    for lower left corner). The dictionary with formatting information can be empty
+                    to use the default font size, boldness, ..., else pyplot.text kwargs are accepted.
 
         execute_code    This option allows to pass arbitrary code that is executed just before
                         saving the figure and can be used to access aplpy functionality that is
