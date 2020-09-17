@@ -667,6 +667,9 @@ def _show_channel_label(panel, fig, kwargs):
 def _save_figure(fitsfile, fig, kwargs):
     out = kwargs.get('out',os.path.splitext(fitsfile)[0]+'.png')
     if isinstance(out,str):
+        if not os.path.exists(os.path.dirname(out)):
+            print("\x1b[0;34;40m[easy_aplpy]\x1b[0m Directory does not exist. Created "+os.path.dirname(out))
+            os.system('mkdir -p '+os.path.dirname(out))
         fig.savefig(out, dpi=300, transparent=True, adjust_bbox=True)
         print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out)
     elif isinstance(out,dict):
