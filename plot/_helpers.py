@@ -123,7 +123,7 @@ def _set_up_panel_figure(main_fig, panel, kwargs):
     figsize = kwargs.get('figsize', (8.267,11.692))     # A4 in inches
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
-        fig = aplpy.FITSFigure(panel['file'], figure=main_fig, subplot=[panel['x'],panel['y'],panel['width'],panel['height']], dimensions=[0,1], slices=[panel['channel']])
+        fig = aplpy.FITSFigure(panel['file'], figure=main_fig, subplot=[panel['x'],panel['y'],panel['width'],panel['height']], dimensions=[0,1], slices=[int(panel['channel'])])
     return fig
 
 
@@ -227,6 +227,10 @@ def _show_map(fitsfile, fig, kwargs):
 def _recenter_plot(fitsfile, fig, kwargs):
     recenter = kwargs.get('recenter')
     imtype = kwargs.get('imtype')
+
+    if (aplpy.version.major > 1) and (fits.getheader(fitsfile)['naxis']>2):
+        raise Exception("Recentering cubes is not possible in APLpy 2. Use APLpy<2 or do not use recenter.")
+
     if ( imtype == 'pp' ):
         if ( not recenter is None ) and _test_recenter_format(recenter):
             if (len(recenter) == 2):
@@ -416,7 +420,9 @@ def _show_scalebar(fitsfile, fig, kwargs, panel=None):
 ###################################################################################################
 
 def _show_beam(fitsfile, fig, kwargs):
-    beam = kwargs.get('beam', 'bottom right')
+    beam = kwargs.get('beam', None)
+    if beam == True:
+        beam = 'bottom right'
     imtype = kwargs.get('imtype')
     if not ( beam is None ) and not ( imtype == 'pv' ):
         fig.add_beam()
