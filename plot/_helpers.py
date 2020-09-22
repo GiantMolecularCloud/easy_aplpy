@@ -354,9 +354,9 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
         print("Header keyword 'BUNIT' not present in "+fitsfile)
         bunit = 'unknown quantity'
     colorbar = kwargs.get('colorbar', ['right',bunit])        # add the colorbar panel
-    cmap     = kwargs.get('cmap', 'viridis')                                   # the recommended cmap
+    cmap     = kwargs.get('cmap', 'viridis')                  # the recommended cmap
     stretch  = kwargs.get('stretch', 'linear')
-    vmin     = kwargs.get('vmin')                                              # no default, aplpy scales automatically
+    vmin     = kwargs.get('vmin')                             # no default, aplpy scales automatically
     vmax     = kwargs.get('vmax')
     vmid     = kwargs.get('vmid', None)
     if not colorbar is None:
@@ -368,6 +368,9 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
             orientation = 'vertical'
         else:
             raise NotImplementedError("Only colorbar in 'last panel' and 'right' of the last panel is supported at the moment.")
+
+        if isinstance(cmap, str):                             # fix "cmap is not colormap instance" error in jupyter
+            cmap = plt.get_cmap(cmap)
 
         if (stretch == 'linear'):
             mplcolorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), orientation=orientation)
