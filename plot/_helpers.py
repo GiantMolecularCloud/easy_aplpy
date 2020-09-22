@@ -89,7 +89,7 @@ def _channel_physical(fitsfile, user_channel):
     cdelt = u.Quantity(str(header['cdelt'+freqax])+header['cunit'+freqax])
     crpix = int(header['crpix'+freqax])
 
-    if isinstance(user_channel, int):
+    if isinstance(user_channel, (int,np.int64,np.int32,np.int16)):
         channel  = user_channel                                                # channel number already given by user
         physical = (user_channel-crpix)*cdelt+crval                            # physical value calculated
     elif isinstance(user_channel, u.quantity.Quantity):
@@ -638,6 +638,7 @@ def _show_channel_label(panel, fig, kwargs):
     else:
         raise TypeError("Unrecognized type of channel_label. Must be an instruction ('physical', 'number', None) or a list of strings.")
 
+    label = kwargs.get('label')
     if label:
         fig.add_label(easy_aplpy.settings.grid_label_pos[0],
             easy_aplpy.settings.grid_label_pos[1],
