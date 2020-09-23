@@ -425,11 +425,51 @@ def _show_beam(fitsfile, fig, kwargs):
         beam = 'bottom right'
     imtype = kwargs.get('imtype')
     if not ( beam is None ) and not ( imtype == 'pv' ):
-        fig.add_beam()
-        fig.beam.show()
-        fig.beam.set_corner(beam)
-        fig.beam.set_frame(easy_aplpy.settings.beam_frame)
-        fig.beam.set_color(easy_aplpy.settings.beam_color)
+
+        try:                # APLpy 1.1.1 fails to plot beams
+            fig.add_beam()
+            fig.beam.show()
+            fig.beam.set_corner(beam)
+            fig.beam.set_frame(easy_aplpy.settings.beam_frame)
+            fig.beam.set_color(easy_aplpy.settings.beam_color)
+        except:             # plot beam manually
+            print("\x1b[0;31;40mCannot plot beam. This is a bug in APLpy.\x1b[0m")
+
+            # beam_kwargs = {'linewidth': 1., 'fill': False, 'zorder': 20}        # see https://matplotlib.org/3.3.1/api/_as_gen/matplotlib.patches.Ellipse.html#matplotlib.patches.Ellipse
+            #
+            # if not isinstance(beam, dict):
+            #     if 'bottom' in beam:
+            #         bx = 0.05
+            #     elif 'top' in beam:
+            #         bx = 0.95
+            #     else:
+            #         raise ValueError("Beam x location not determined. Give top/bottom or values.")
+            #     if 'left' in beam:
+            #         by = 0.05
+            #     elif 'right' in beam:
+            #         by = 0.95
+            #     else:
+            #         raise ValueError("Beam y location not determined. Give left/right or values.")
+            # else:
+            #     if not all():
+            #         raise
+            #
+            # try:
+            #     bmaj = fits.getheader(fitsfile)['bmaj']
+            #     bmin = fits.getheader(fitsfile)['bmin']
+            #     bpa  = fits.getheader(fitsfile)['bpa']
+            # except:
+            #     raise Warning("Could not determine beam from header. Will not plot beam.")
+            #     break
+            #
+            # from matplotlib import patches
+            # b = patches.Ellipse((bx, by),
+            #                     width  = bmaj,
+            #                     height = bmin,
+            #                     angle  = bpa,
+            #                     **beam_kwargs)
+            # fig.ax.add_patch(b)
+
 
 
 ###################################################################################################
