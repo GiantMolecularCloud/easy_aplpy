@@ -285,7 +285,7 @@ def _show_contours(fitsfile, fig, kwargs, panel=None):
                     else:
                         raise TypeError("Contour: could not interpret contour list.")
                 elif len(cont) == 5:
-                    fig.show_contour(data=cont[0], slices=cont[1], dimensions=[0,1], levels=cont[2], colors=cont[3], **cont[4])
+                    fig.show_contour(data=cont[0], slices=[cont[1]], dimensions=[0,1], levels=cont[2], colors=cont[3], **cont[4])
                 else:
                     raise TypeError("Contour: wrong number or format of contour parameters in contour "+str(cont)+".")
 
