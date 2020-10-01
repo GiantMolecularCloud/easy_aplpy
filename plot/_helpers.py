@@ -363,7 +363,9 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
     vmin     = kwargs.get('vmin')                             # no default, aplpy scales automatically
     vmax     = kwargs.get('vmax')
     vmid     = kwargs.get('vmid', None)
+
     if not colorbar is None:
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting panel "+str(panel['num']+1)+" of "+str(panel['npanels'])+", colorbar")
         cbpnl = panels[-1]
         ax1 = main_fig.add_axes([cbpnl['x'],cbpnl['y'],cbpnl['width'],cbpnl['height']])
         if ( colorbar[0] == 'last panel' ) or ( colorbar[0] == 'top' ):
