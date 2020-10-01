@@ -12,6 +12,7 @@ from astropy import units as u
 
 __all__ = ['tick_label_xformat',
            'tick_label_yformat',
+           'tick_labelpad',
            'ticks_xspacing',
            'ticks_yspacing',
            'ticks_minor_frequency',
@@ -23,8 +24,7 @@ __all__ = ['tick_label_xformat',
            'scalebar_linewidth',
            'scalebar_color',
            'scalebar_fontsize',
-           'beam_frame',
-           'beam_color',
+           'beam_kwargs',
            'ticks_color',
            'frame_color',
            'tick_label_fontsize',
@@ -46,6 +46,7 @@ __all__ = ['tick_label_xformat',
 # these are just some defaults
 tick_label_xformat    = 'hh:mm:ss.s'
 tick_label_yformat    = 'dd:mm:ss'
+tick_labelpad         = 0
 ticks_xspacing        = Angle('0 1 0', unit='hourangle')
 ticks_yspacing        = 10.0*u.arcsec
 ticks_minor_frequency = 5
@@ -60,8 +61,7 @@ scalebar_linestyle    = 'solid'	        # or any other plt.plot linestyle
 scalebar_linewidth    = 2			    # unit: point
 scalebar_color        = 'red'		    # any named color or mpl.color instance
 scalebar_fontsize     = 10.0
-beam_frame            = False           # plot a frame around the beam ellipse
-beam_color            = 'black'
+beam_kwargs           = {'loc': 'lower left', 'facecolor': 'k', 'edgecolor': 'k', 'frame': True, 'pad': 0.5, 'borderpad': 1.0, 'filled': True, 'linewidth': 1.0, 'zorder': 99}
 ticks_color           = 'black'	        # this setting overrules the matplotlibrc defaults
 frame_color           = 'black'
 tick_label_fontsize   = 12              # unit: point

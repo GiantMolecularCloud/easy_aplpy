@@ -365,7 +365,7 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
     vmid     = kwargs.get('vmid', None)
 
     if not colorbar is None:
-        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting panel "+str(panel['num']+1)+" of "+str(panel['npanels'])+", colorbar")
+        print("\x1b[0;34;40m[easy_aplpy]\x1b[0m plotting colorbar")
         cbpnl = panels[-1]
         ax1 = main_fig.add_axes([cbpnl['x'],cbpnl['y'],cbpnl['width'],cbpnl['height']])
         if ( colorbar[0] == 'last panel' ) or ( colorbar[0] == 'top' ):
@@ -424,56 +424,55 @@ def _show_scalebar(fitsfile, fig, kwargs, panel=None):
 ###################################################################################################
 
 def _show_beam(fitsfile, fig, kwargs):
-    beam = kwargs.get('beam', None)
-    if beam == True:
-        beam = 'bottom right'
+    beam = kwargs.get('beam', True)
+    beam_kwargs = easy_aplpy.settings.beam_kwargs
+    if isinstance(beam,str):
+        beam = beam.replace('bottom','lower')          # AnchoredEllipse needs specfic words
+        beam = beam.replace('top','upper')             # AnchoredEllipse needs specfic words
+        beam_kwargs['loc'] = beam
+
     imtype = kwargs.get('imtype')
     if not ( beam is None ) and not ( imtype == 'pv' ):
 
-        try:                # APLpy 1.1.1 fails to plot beams
+        if not aplpy.version.version=='1.1.1':                # APLpy 1.1.1 fails to plot beams
             fig.add_beam()
             fig.beam.show()
-            fig.beam.set_corner(beam)
-            fig.beam.set_frame(easy_aplpy.settings.beam_frame)
-            fig.beam.set_color(easy_aplpy.settings.beam_color)
-        except:             # plot beam manually
-            print("\x1b[0;31;40mCannot plot beam. This is a bug in APLpy.\x1b[0m")
+            fig.beam.set_corner(beam_kwargs['loc'])
+            fig.beam.set_frame(easy_aplpy.settings.beam_kwargs['frame'])
+            fig.beam.set_color(easy_aplpy.settings.beam_kwargs['facecolor'])
+        else:                                                 # plot beam manually for APLpy 1.1.1
+            # translate location codes
+            # keep human-readable strings in settings and translate only here to numbers
+            # see https://matplotlib.org/3.1.1/api/offsetbox_api.html#matplotlib.offsetbox.AnchoredOffsetbox
+            codes = {'center': 10, 'center left': 6, 'center right': 7, 'lower center': 8, 'lower left': 3, 'lower right': 4, 'right': 5, 'upper center': 9, 'upper left': 2, 'upper right': 1}
 
-            # beam_kwargs = {'linewidth': 1., 'fill': False, 'zorder': 20}        # see https://matplotlib.org/3.3.1/api/_as_gen/matplotlib.patches.Ellipse.html#matplotlib.patches.Ellipse
-            #
-            # if not isinstance(beam, dict):
-            #     if 'bottom' in beam:
-            #         bx = 0.05
-            #     elif 'top' in beam:
-            #         bx = 0.95
-            #     else:
-            #         raise ValueError("Beam x location not determined. Give top/bottom or values.")
-            #     if 'left' in beam:
-            #         by = 0.05
-            #     elif 'right' in beam:
-            #         by = 0.95
-            #     else:
-            #         raise ValueError("Beam y location not determined. Give left/right or values.")
-            # else:
-            #     if not all():
-            #         raise
-            #
-            # try:
-            #     bmaj = fits.getheader(fitsfile)['bmaj']
-            #     bmin = fits.getheader(fitsfile)['bmin']
-            #     bpa  = fits.getheader(fitsfile)['bpa']
-            # except:
-            #     raise Warning("Could not determine beam from header. Will not plot beam.")
-            #     break
-            #
-            # from matplotlib import patches
-            # b = patches.Ellipse((bx, by),
-            #                     width  = bmaj,
-            #                     height = bmin,
-            #                     angle  = bpa,
-            #                     **beam_kwargs)
-            # fig.ax.add_patch(b)
+            try:
+                if not (np.abs(fits.getheader(fitsfile)['cdelt1']) - np.abs(fits.getheader(fitsfile)['cdelt2']) < 1e-6):
+                    raise ValueError("Pixels are not square (within 1e-6 degrees). Cannot plot beam.")
+                bmaj = fits.getheader(fitsfile)['bmaj']     # in degrees by default
+                bmin = fits.getheader(fitsfile)['bmin']     # in degrees by default
+                bpa  = fits.getheader(fitsfile)['bpa']      # in degrees by default
+                deg_per_pix = np.abs(fits.getheader(fitsfile)['cdelt1'])
 
+                from mpl_toolkits.axes_grid1.anchored_artists import AnchoredEllipse
+                ae = AnchoredEllipse(fig._ax1.transData,
+                                     width     = bmin/deg_per_pix,          # in axis coordinates which is pixels!
+                                     height    = bmaj/deg_per_pix,          # in axis coordinates which is pixels!
+                                     angle     = bpa,
+                                     loc       = codes[beam_kwargs['loc']],
+                                     pad       = beam_kwargs['pad'],        # padding betwen beam object and axis
+                                     borderpad = beam_kwargs['borderpad'],  # padding within beam object
+                                     frameon   = beam_kwargs['frame']       # show a frame around beam?
+                                    )
+                fig._ax1.add_artist(ae)
+                ae.ellipse.set_fill(beam_kwargs['filled'])
+                ae.ellipse.set_linewidth(beam_kwargs['linewidth'])
+                ae.ellipse.set_facecolor(beam_kwargs['facecolor'])
+                ae.ellipse.set_edgecolor(beam_kwargs['edgecolor'])
+                ae.ellipse.set_zorder(beam_kwargs['zorder'])                # ensure beam is always on top
+
+            except:
+                raise Warning("Could not determine beam from header. Will not plot beam.")
 
 
 ###################################################################################################
@@ -590,7 +589,7 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
 def _format_grid_ticksNlabels(panel, fig, kwargs):
     imtype = kwargs.get('imtype')
     if ( imtype == 'pp' ):
-        fig.ticks.show()
+        # fig.ticks.show()
         fig.tick_labels.set_xformat(easy_aplpy.settings.tick_label_xformat)
         fig.tick_labels.set_yformat(easy_aplpy.settings.tick_label_yformat)
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
@@ -601,37 +600,52 @@ def _format_grid_ticksNlabels(panel, fig, kwargs):
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
-        fig.axis_labels.hide()
-        fig.tick_labels.hide()
+        # fig.axis_labels.hide()
+        # fig.tick_labels.hide()
+        fig._ax1.tick_params(pad=easy_aplpy.settings.tick_labelpad)
     if ( imtype == 'pv' ):
         labels = kwargs.get('labels')
         if labels:
             fig.set_axis_labels(labels[0],labels[1])
-        fig.ticks.show()
+        # fig.ticks.show()
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
         fig.ticks.set_length(easy_aplpy.settings.tick_length)
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
-        fig.axis_labels.hide()
-        fig.tick_labels.hide()
+        # fig.axis_labels.hide()
+        # fig.tick_labels.hide()
+
+    # # show axis and tick labels on all panels
+    # if ( easy_aplpy.settings.grid_label_all ):
+    #     if ( 'left' in panel['position'] ):
+    #         fig.axis_labels.show_y()
+    #         fig.tick_labels.show_y()
+    #     if ( 'bottom' in panel['position'] ):
+    #         fig.axis_labels.show_x()
+    #         fig.tick_labels.show_x()
+    # # or just in the bottom left panel
+    # else:
+    #     if ( 'left' in panel['position'] and 'bottom' in panel['position'] ):
+    #         fig.axis_labels.show_x()
+    #         fig.tick_labels.show_x()
+    #         fig.axis_labels.show_y()
+    #         fig.tick_labels.show_y()
 
     # show axis and tick labels on all panels
     if ( easy_aplpy.settings.grid_label_all ):
-        if ( 'left' in panel['position'] ):
-            fig.axis_labels.show_y()
-            fig.tick_labels.show_y()
-        if ( 'bottom' in panel['position'] ):
-            fig.axis_labels.show_x()
-            fig.tick_labels.show_x()
+        if not ( 'left' in panel['position'] ):
+            fig.axis_labels.hide_y()
+            fig.tick_labels.hide_y()
+        if not ( 'bottom' in panel['position'] ):
+            fig.axis_labels.hide_x()
+            fig.tick_labels.hide_x()
     # or just in the bottom left panel
     else:
-        if ( 'left' in panel['position'] and 'bottom' in panel['position'] ):
-            fig.axis_labels.show_x()
-            fig.tick_labels.show_x()
-            fig.axis_labels.show_y()
-            fig.tick_labels.show_y()
+        if not ( 'left' in panel['position'] and 'bottom' in panel['position'] ):
+            fig.axis_labels.hide()
+            fig.tick_labels.hide()
 
 
 ###################################################################################################
@@ -720,9 +734,10 @@ def _show_channel_label(panel, fig, kwargs):
 def _save_figure(fitsfile, fig, kwargs):
     out = kwargs.get('out',os.path.splitext(fitsfile)[0]+'.png')
     if isinstance(out,str):
-        if not os.path.exists(os.path.dirname(out)):
-            print("\x1b[0;34;40m[easy_aplpy]\x1b[0m Directory does not exist. Created "+os.path.dirname(out))
-            os.system('mkdir -p '+os.path.dirname(out))
+        if os.path.dirname(out) != '':
+            if not os.path.exists(os.path.dirname(out)):
+                print("\x1b[0;34;40m[easy_aplpy]\x1b[0m Directory does not exist. Created "+os.path.dirname(out))
+                os.system('mkdir -p '+os.path.dirname(out))
         fig.savefig(out, dpi=300, transparent=True, adjust_bbox=True)
         print("\x1b[0;34;40m[easy_aplpy]\x1b[0m saved plot as "+out)
     elif isinstance(out,dict):

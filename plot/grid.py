@@ -152,7 +152,8 @@ def grid(fitsfile, shape, channels, **kwargs):
 
             fig = _set_up_panel_figure(main_fig, panel, kwargs)
             _show_map(panel['file'], fig, kwargs)
-            _show_beam(panel['file'], fig, kwargs)
+            if ( 'left' in panel['position'] and 'bottom' in panel['position'] ):
+                _show_beam(panel['file'], fig, kwargs)
             _show_channel_label(panel, fig, kwargs)
             _show_contours(panel['file'], fig, kwargs, panel)
             _overplot_regions(panel['file'], fig, kwargs, panel)
