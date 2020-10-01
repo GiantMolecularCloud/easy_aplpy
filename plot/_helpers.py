@@ -389,8 +389,10 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
         else:
             raise NotImplementedError("Scalings other than 'linear' and 'log' are not supported yet for grid plots.")
 
-        mplcolorbar.set_label(colorbar[1], size=easy_aplpy.settings.colorbar_label_fontsize, labelpad=easy_aplpy.settings.colorbar_labelpad)
-        mplcolorbar.outline.set_edgecolor(easy_aplpy.settings.frame_color)
+        mplcolorbar.set_label(colorbar[1],
+                              size     = easy_aplpy.settings.colorbar_label_fontsize,
+                              labelpad = easy_aplpy.settings.colorbar_labelpad
+                             )
         mplcolorbar.ax.tick_params(labelsize=easy_aplpy.settings.colorbar_label_fontsize)
 
         from distutils.version import LooseVersion
@@ -681,21 +683,20 @@ def _show_channel_label(panel, fig, kwargs):
         elif ( channel_label == 'number' ):
             label = '{:d}'.format(panel['channel'])
     elif ( channel_label == None ):
-        label = False
+        label = None
     elif isinstance(channel_label,(list,tuple)):
         label = str(channel_label[panel['num']])
     else:
         raise TypeError("Unrecognized type of channel_label. Must be an instruction ('physical', 'number', None) or a list of strings.")
 
-    label = kwargs.get('label')
-    if label:
+    if (label != None):
         fig.add_label(easy_aplpy.settings.grid_label_pos[0],
-            easy_aplpy.settings.grid_label_pos[1],
-            label,
-            color    = easy_aplpy.settings.grid_label_color,
-            relative = True,
-            size     = easy_aplpy.settings.grid_label_fontsize
-            )
+                      easy_aplpy.settings.grid_label_pos[1],
+                      label,
+                      color    = easy_aplpy.settings.grid_label_color,
+                      relative = True,
+                      size     = easy_aplpy.settings.grid_label_fontsize
+                     )
 
 
 ###################################################################################################
