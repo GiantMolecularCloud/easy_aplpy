@@ -32,14 +32,16 @@ Produces this plot:
 
 
 # Installation:
-Dependencies: astropy==3.2.3, aplpy==1.1.1, matplotlib==3.2.2
 
-> :warning: **COMPATIBILITY:**
-> APLpy has lots of bug that seem to not get fixed anymore. Consider APLpy at least end-of-life or even deprecated.
+## Dependencies:  
+astropy==3.2.3, aplpy==1.1.1, matplotlib==3.2.2
+
+> :warning: **COMPATIBILITY:**  
+> APLpy has lots of bug that seem to not get fixed anymore. Consider APLpy at least end-of-life or even deprecated.  
 > The current version of easy_aplpy was tested with APLpy 1.1.1 / Astropy 3.2.3 / matplotlib 3.2.2 and contains fixes specifically for these versions.
-> Compatibility with other versions is a hit-and-miss game.
-> APLpy<1.1.1 probably works well with some minor problems. APLpy>=2 removes crucial functionality to make the additional functionality of easy_aplpy work and is therefore not compatible beyond the most simple figures.
-> Astropy>=4 restructured some code which breaks parts of APLpy. Aside from some more advanced options, easy_aplpy works with Astropy>=4 and simple figures are possible.
+> Compatibility with other versions is a hit-and-miss game.  
+> APLpy<1.1.1 probably works well with some minor problems. APLpy>=2 removes crucial functionality to make the additional functionality of easy_aplpy work and is therefore not compatible beyond the most simple figures.  
+> Astropy>=4 restructured some code which breaks parts of APLpy. Aside from some more advanced options, easy_aplpy works with Astropy>=4 and simple figures are possible.  
 > easy_aplpy requires matplotlib >= 3.0.2 or <3.0 because bugs in versions 3.0.0 & 3.0.1 break APLpy and thus easy_aplpy.
 
 > A general warning regarding APLpy==1.1.1: This version of APLpy has a serious bug that prevents plotting the beam. easy_aplpy reimplements beam plotting to work around this issue. Might be useful to keep this in mind when further customizing an easy_aplpy figure.
