@@ -34,7 +34,8 @@ Produces this plot:
 # Installation:
 Dependencies: astropy==3.2.3, aplpy==1.1.1, matplotlib==3.2.2
 
-> :warning: COMPATIBILITY: APLpy has lots of bug that seem to not get fixed anymore. Consider APLpy at least end-of-life or even deprecated.
+> :warning: **COMPATIBILITY:**
+> APLpy has lots of bug that seem to not get fixed anymore. Consider APLpy at least end-of-life or even deprecated.
 > The current version of easy_aplpy was tested with APLpy 1.1.1 / Astropy 3.2.3 / matplotlib 3.2.2 and contains fixes specifically for these versions.
 > Compatibility with other versions is a hit-and-miss game.
 > APLpy<1.1.1 probably works well with some minor problems. APLpy>=2 removes crucial functionality to make the additional functionality of easy_aplpy work and is therefore not compatible beyond the most simple figures.
