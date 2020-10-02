@@ -37,8 +37,16 @@ helpers.hide_ComparisonWarnings()
 import aplpy
 if aplpy.version.major!=1:
     print("\x1b[0;31;40m"+"easy_aplpy only partially works with APLpy 2 and the old APLpy 0 version. Some functionality will raise unsolvable errors."+"\x1b[0m")
-if aplpy.version.version=='1.1.1':
-    print("\x1b[0;31;40m"+"APLpy 1.1.1 has problems plotting the beam but newer and older version have even more serious bugs."+"\x1b[0m")
+# if aplpy.version.version=='1.1.1':
+#     print("\x1b[0;31;40m"+"APLpy 1.1.1 has problems plotting the beam but newer and older version have even more serious bugs."+"\x1b[0m")
+
+
+###################################################################################################
+
+# easy_aplpy version
+####################
+
+version = '0.2'
 
 
 ###################################################################################################
