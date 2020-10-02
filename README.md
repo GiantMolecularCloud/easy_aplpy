@@ -32,7 +32,9 @@ Produces this plot:
 
 
 # Installation:
-Dependencies: astropy==3.2.3, aplpy==1.1.1, matplotlib==3.2.2
+
+## Dependencies:  
+astropy==3.2.3, aplpy==1.1.1, matplotlib==3.2.2
 
 > :warning: **COMPATIBILITY:**  
 > APLpy has lots of bug that seem to not get fixed anymore. Consider APLpy at least end-of-life or even deprecated.  
