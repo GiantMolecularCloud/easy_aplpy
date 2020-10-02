@@ -1,5 +1,5 @@
 #####################################################################
-#                          APLPY PLOTTING                           #
+#                            EASY APLPY                             #
 #####################################################################
 # These functions will produce plots of channel maps, moment maps,  #
 # pV diagrams, ... in a quality that (hopefully) allows publishing. #
@@ -35,6 +35,7 @@ __all__ = ['tick_label_xformat',
            'grid_label_fontsize',
            'grid_label_format',
            'grid_label_all',
+           'grid_label_bbox',
            'margins',
            'props'
           ]
@@ -66,11 +67,12 @@ ticks_color           = 'black'	        # this setting overrules the matplotlibr
 frame_color           = 'black'
 tick_label_fontsize   = 12              # unit: point
 axis_label_fontsize   = 12              # unit: point
-tick_length           = 8              # unit: point
-grid_label_pos        = [0.8,0.8]       # relative position in panel
+tick_length           = 8               # unit: point
+grid_label_pos        = [0.95,0.95]     # relative position in panel
 grid_label_color      = 'black'
 grid_label_fontsize   = 10              # unit: point
 grid_label_format     = '{:3.1f}'       # .format string
 grid_label_all        = False           # label all panels or just the bottom left?
+grid_label_bbox       = False           # show a box (see props below) around the labels in grid
 margins               = [0.10,0.10,0.05,0.10]    # margins around figure (left, right, top, bottom)
-props                 = {'boxstyle': "round", 'facecolor': "w", 'edgecolor': "black", 'linewidth': 0.5, 'alpha': 0.8}
+props                 = {'boxstyle': "round", 'facecolor': "white", 'edgecolor': "black", 'linewidth': 0.5, 'alpha': 0.8}

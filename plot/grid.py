@@ -1,5 +1,5 @@
 #####################################################################
-#                          APLPY PLOTTING                           #
+#                            EASY APLPY                             #
 #####################################################################
 # These functions will produce plots of channel maps, moment maps,  #
 # pV diagrams, ... in a quality that (hopefully) allows publishing. #

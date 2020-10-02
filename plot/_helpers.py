@@ -1,5 +1,5 @@
 #####################################################################
-#                          APLPY PLOTTING                           #
+#                            EASY APLPY                             #
 #####################################################################
 # These functions will produce plots of channel maps, moment maps,  #
 # pV diagrams, ... in a quality that (hopefully) allows publishing. #
@@ -589,7 +589,7 @@ def _show_overlays(fitsfile, fig, kwargs, panel=None):
 def _format_grid_ticksNlabels(panel, fig, kwargs):
     imtype = kwargs.get('imtype')
     if ( imtype == 'pp' ):
-        # fig.ticks.show()
+        fig._ax1.tick_params(pad=easy_aplpy.settings.tick_labelpad)             # padding must be set before other stuff to not mess up the ticks
         fig.tick_labels.set_xformat(easy_aplpy.settings.tick_label_xformat)
         fig.tick_labels.set_yformat(easy_aplpy.settings.tick_label_yformat)
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
@@ -600,38 +600,16 @@ def _format_grid_ticksNlabels(panel, fig, kwargs):
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
-        # fig.axis_labels.hide()
-        # fig.tick_labels.hide()
-        fig._ax1.tick_params(pad=easy_aplpy.settings.tick_labelpad)
     if ( imtype == 'pv' ):
         labels = kwargs.get('labels')
         if labels:
             fig.set_axis_labels(labels[0],labels[1])
-        # fig.ticks.show()
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
         fig.ticks.set_length(easy_aplpy.settings.tick_length)
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
-        # fig.axis_labels.hide()
-        # fig.tick_labels.hide()
-
-    # # show axis and tick labels on all panels
-    # if ( easy_aplpy.settings.grid_label_all ):
-    #     if ( 'left' in panel['position'] ):
-    #         fig.axis_labels.show_y()
-    #         fig.tick_labels.show_y()
-    #     if ( 'bottom' in panel['position'] ):
-    #         fig.axis_labels.show_x()
-    #         fig.tick_labels.show_x()
-    # # or just in the bottom left panel
-    # else:
-    #     if ( 'left' in panel['position'] and 'bottom' in panel['position'] ):
-    #         fig.axis_labels.show_x()
-    #         fig.tick_labels.show_x()
-    #         fig.axis_labels.show_y()
-    #         fig.tick_labels.show_y()
 
     # show axis and tick labels on all panels
     if ( easy_aplpy.settings.grid_label_all ):
@@ -657,7 +635,8 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
         fig.tick_labels.set_xformat(easy_aplpy.settings.tick_label_xformat)
         fig.tick_labels.set_yformat(easy_aplpy.settings.tick_label_yformat)
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
-        fig.ticks.show()
+        # fig.ticks.show()              # causes double ticks
+        fig._ax1.tick_params(pad=easy_aplpy.settings.tick_labelpad)             # padding must be set before other stuff to not mess up the ticks
         fig.ticks.set_xspacing((easy_aplpy.settings.ticks_xspacing).to(u.degree).value)
         fig.ticks.set_yspacing((easy_aplpy.settings.ticks_yspacing).to(u.degree).value)
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
@@ -671,7 +650,7 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
             fig.set_axis_labels(labels[0],labels[1])
         fig.tick_labels.show()
         fig.tick_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
-        fig.ticks.show()
+        # fig.ticks.show()              # causes double ticks
         fig.ticks.set_minor_frequency(easy_aplpy.settings.ticks_minor_frequency)
         fig.ticks.set_length(easy_aplpy.settings.tick_length)
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
@@ -706,12 +685,18 @@ def _show_channel_label(panel, fig, kwargs):
         raise TypeError("Unrecognized type of channel_label. Must be an instruction ('physical', 'number', None) or a list of strings.")
 
     if (label != None):
+        label_kwargs = {'usetex': True}
+        if easy_aplpy.settings.grid_label_bbox:
+            label_kwargs['bbox'] = easy_aplpy.settings.props
         fig.add_label(easy_aplpy.settings.grid_label_pos[0],
                       easy_aplpy.settings.grid_label_pos[1],
                       label,
                       color    = easy_aplpy.settings.grid_label_color,
                       relative = True,
-                      size     = easy_aplpy.settings.grid_label_fontsize
+                      size     = easy_aplpy.settings.grid_label_fontsize,
+                      horizontalalignment = 'right',
+                      verticalalignment   = 'top',
+                      **label_kwargs
                      )
 
 
