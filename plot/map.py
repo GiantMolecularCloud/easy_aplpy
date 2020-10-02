@@ -42,7 +42,8 @@ def map(fitsfile, **kwargs):
 
     Optional arguments:
         out         Path and file name of the created plot. If not specified, the plot will be
-                    saved as png where the input image is located.
+                    saved as png where the input image is located. Use None to not save the
+                    figure. This can be useful for interactive plotting in jupyter notebooks.
                     OR dictionary specifying matplotlib.figure.save parameters.
 
         channel     The channel to be plotted if fitsfile is a data cube instead of a 2D image.
@@ -73,8 +74,10 @@ def map(fitsfile, **kwargs):
         contours    List of contour elements. Each contour element must be a list of 'image file',
                     list of contour levels and list of colors for each contour. If only one color
                     is given, it will be used for all contours. When specifying a fits cube, you
-                    have to provide the slice to be used as second list element. Valid mpl.contour
-                    kwargs to fromat the contour can be given as last list element.
+                    have to provide the slice to be used as second list element. This must be done
+                    even when the third axis (spectral or stokes) of the cube is degenerate and
+                    contains only a single plane. Valid mpl.contour kwargs to format the contour can
+                    be given as last list element.
         clabel      Draw labels on the contours? Needs contours to be present. Either set to True
                     to use the matplotlib defaults or give a dictionary with allowed mpl.axes.clabel
                     arguments. Tip: Use clabel={'fmt': '%i'} to get labels without trailing zeros.
@@ -97,6 +100,11 @@ def map(fitsfile, **kwargs):
                     what type of overlay needs which information. Positions and lengths need to be
                     given as SkyCoord and astropy.units. The last element needs to be a kwarg dict
                     which can also be empty if you do not want to provide e.g. linewidth or style.
+        texts       List of text overlay elements. Each text overlay elements should give position,
+                    text (as a string) and a text formatting dictionary. The position can be a
+                    SkyCoord object or a list of relative coordinates in the figure (e.g. [0.1,0.1]
+                    for lower left corner). The dictionary with formatting information can be empty
+                    to use the default font size, boldness, ..., else pyplot.text kwargs are accepted.
 
         execute_code    This option allows to pass arbitrary code that is executed just before
                         saving the figure and can be used to access aplpy functionality that is

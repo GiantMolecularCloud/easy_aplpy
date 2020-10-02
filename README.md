@@ -3,32 +3,6 @@ Baking a publication quality plot can involve a fair bit of code. Easy APLpy can
 
 For details on APLpy see https://github.com/aplpy/aplpy
 
-| WARNING: easy_aplpy is not compatible with APLpy 2. It is not clear yet if the additional functionality of easy_aplpy (e.g. legends for contours) can be implemented with APLpy 2. |
-|--|
-
-| WARNING: Version 1.1.1 of APLpy has problems plotting the beam which also affects easy_aplpy |
-|--|
-Use either an older version of APLpy or explicitely set beam=None when plotting. The default in easy_aplpy is to plot a beam when available in the header, so not specifying the beam when using APLpy 1.1.1 will result in an error. This problem will hopefully be fixed in APLpy soon.
-
-Note: easy_aplpy requires matplotlib >= 3.0.2 or <3.0 as versions 3.0.0 & 3.0.1 break APLpy and thus easy_aplpy.
-
-## Table of Contents
-
-* [Available wrappers](#available-wrappers)
-    * [easy_aplpy.plot.map](#easy_aplpy.plot.map)
-    * [easy_aplpy.plot.grid](#easy_aplpy.plot.grid)
-* [Installation](#installation)
-* [Examples](#examples)
-    * [Single map](#single-map)
-    * [Single map](#single-map)
-    * [Single position-velocity diagram](#single-position-velocity-diagram)
-    * [Single map with complex overlays](#single-map-with-complex-overlays)
-    * [Position-velocity diagram with manual formatting](#position-velocity-diagram-with-manual-formatting)
-    * [Channel map with partial overlays](#channel-map-with-partial-overlays)
-
-
-
-
 # Available wrappers:
 
 ### easy_aplpy.plot.map
@@ -58,7 +32,19 @@ Produces this plot:
 
 
 # Installation:
-Dependencies: astropy, aplpy
+
+## Dependencies:  
+astropy==3.2.3, aplpy==1.1.1, matplotlib==3.2.2
+
+> :warning: **COMPATIBILITY:**  
+> APLpy has lots of bug that seem to not get fixed anymore. Consider APLpy at least end-of-life or even deprecated.  
+> The current version of easy_aplpy was tested with APLpy 1.1.1 / Astropy 3.2.3 / matplotlib 3.2.2 and contains fixes specifically for these versions.
+> Compatibility with other versions is a hit-and-miss game.  
+> APLpy<1.1.1 probably works well with some minor problems. APLpy>=2 removes crucial functionality to make the additional functionality of easy_aplpy work and is therefore not compatible beyond the most simple figures.  
+> Astropy>=4 restructured some code which breaks parts of APLpy. Aside from some more advanced options, easy_aplpy works with Astropy>=4 and simple figures are possible.  
+> easy_aplpy requires matplotlib >= 3.0.2 or <3.0 because bugs in versions 3.0.0 & 3.0.1 break APLpy and thus easy_aplpy.
+
+> A general warning regarding APLpy==1.1.1: This version of APLpy has a serious bug that prevents plotting the beam. easy_aplpy reimplements beam plotting to work around this issue. Might be useful to keep this in mind when further customizing an easy_aplpy figure.
 
 ## Install with pip:
 - install the master branch
