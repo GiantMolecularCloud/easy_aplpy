@@ -660,23 +660,23 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
         if ( kwargs['v_unit'] == 'km/s' ):
             print("Detected position-velocity image with velocity unit km/s in the header. Hacking plot to display in km/s instead of m/s (which aplpy forces).")
             ylabel = fig._ax1.yaxis.get_label().get_text()  # get labels
-            ylabel = ylabel.replace('m/s','km/s')           # change to km/s
+            ylabel = ylabel.replace('m / s','km/s')         # change to km/s
             fig.set_axis_labels(ylabel=ylabel)              # update labels
-            yticklabels_str = [x.get_text() for x in fig._ax1.yaxis.get_ticklabels()]                   # get ticklabels
-            yticklabels_str = [x.replace('$','') for x in yticklabels_str]                              # remove LaTeX formatting
-            yticklabels     = [float(x)/1000 for x in yticklabels_str]                                  # convert to km/s
+            yticklabels = [x.get_text() for x in fig._ax1.yaxis.get_ticklabels()]                                   # get ticklabels
+            yticklabels = [x.replace('$','') for x in yticklabels]                                                  # remove LaTeX formatting
+            yticklabels     = [float(x)/1000 for x in yticklabels]                                                  # convert to km/s
             try:
-                is_int = np.all([True if d=='0' else False for x in yticklabels_str for d in x.split('.')[1]])
+                is_int = np.all([True if d=='0' else False for x in yticklabels for d in str(x).split('.')[1]])
             except:
                 is_int = False
-            if is_int:                                                                                  # if integer values, format as such
-                yticklabels = ['$'+'{:d}'.format(int(x))+'$' for x in yticklabels]                      # back to LaTeX formatting
+            if is_int:                                                                                              # if integer values, format as such
+                yticklabels = ['$'+'{:d}'.format(int(x))+'$' for x in yticklabels]                                  # back to LaTeX formatting
             else:
-                try:                                                                                    # I don't care anymore, just use 3 when it fails
-                    decimals = np.max([len(x.split('.')[1]) for x in yticklabels_str])                  # print with appropriate number of decimals
+                try:
+                    decimals = np.max([len(str(x).split('.')[1]) for x in yticklabels])                             # print with appropriate number of decimals
                 except:
                     decimals = 3
-                yticklabels = ['$'+'{:.{decimals}f}'.format(int(x), decimals=decimals)+'$' for x in yticklabels]         # back to LaTeX formatting
+                yticklabels = ['$'+'{:.{decimals}f}'.format(int(x), decimals=decimals)+'$' for x in yticklabels]    # back to LaTeX formatting
             fig._ax1.yaxis.set_ticklabels( yticklabels )
 
 
