@@ -659,9 +659,9 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
         if ( kwargs['v_unit'] == 'km/s' ):
             print("Detected position-velocity image with velocity unit km/s in the header. Hacking plot to display in km/s instead of m/s (which aplpy forces).")
-            ylabel = fig._ax1.yaxis.get_label()         # get labels
-            ylabel = ylabel.replace('m/s','km/s')       # change to km/s
-            fig.set_axis_labels(ylabel=ylabel)          # update labels
+            ylabel = fig._ax1.yaxis.get_label().get_text()  # get labels
+            ylabel = ylabel.replace('m/s','km/s')           # change to km/s
+            fig.set_axis_labels(ylabel=ylabel)              # update labels
             yticklabels = [x.get_text() for x in fig._ax1.yaxis.get_ticklabels()]                   # get ticklabels
             yticklabels = [x.replace('$','') for x in yticklabels]                                  # remove LaTeX formatting
             yticklabels = [float(x)/1000 for x in yticklabels]                                      # convert to km/s
