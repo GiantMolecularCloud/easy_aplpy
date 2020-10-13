@@ -676,7 +676,7 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
                     decimals = np.max([len(x.split('.')[1]) for x in yticklabels_str])                  # print with appropriate number of decimals
                 except:
                     decimals = 3
-                yticklabels = ['$'+'{:.'+str(decimals)+'f}'.format(int(x))+'$' for x in yticklabels]         # back to LaTeX formatting
+                yticklabels = ['$'+'{:.{decimals}f}'.format(int(x), decimals=decimals)+'$' for x in yticklabels]         # back to LaTeX formatting
             fig._ax1.yaxis.set_ticklabels( yticklabels )
 
 
