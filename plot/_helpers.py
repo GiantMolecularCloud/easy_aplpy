@@ -38,10 +38,11 @@ import easy_aplpy
 ###################################################################################################
 
 def _check_image_type(fitsfile, kwargs):
-    header = fits.open(fitsfile)[0].header
+    header = fits.getheader(fitsfile)
     ctypes = [header['ctype'+str(i)] for i in np.arange(1,1+header['naxis'])]
     if ( [i for i in ctypes if i in ['OFFSET','offset','POSITION','position']] ):
         kwargs['imtype'] = 'pv'
+        kwargs['v_unit'] = header['cunit2']
     else:
         kwargs['imtype'] = 'pp'
     return kwargs
@@ -656,6 +657,19 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
         fig.ticks.set_color(easy_aplpy.settings.ticks_color)
         fig.frame.set_color(easy_aplpy.settings.frame_color)
         fig.axis_labels.set_font(size=easy_aplpy.settings.tick_label_fontsize)
+        if ( kwargs['v_unit'] == 'km/s' ):
+            print("Detected position-velocity image with velocity unit km/s in the header. Hacking plot to display in km/s instead of m/s (which aplpy forces).")
+            ylabel = fig._ax1.yaxis.get_label()         # get labels
+            ylabel = ylabel.replace('m/s','km/s')       # change to km/s
+            fig.set_axis_labels(ylabel=ylabel)          # update labels
+            yticklabels = [x.get_text().replace('$','') for x in fig._ax1.yaxis.get_ticklabels()]   # get ticklabels, remove LaTeX formatting
+            yticklabels = [float(x)/1000 for x in yticklabels]                                      # convert to km/s
+            if np.all([True if d=='0' else False for x in yticklabels for d in x.split('.')[1]]):   # if integer values, format as such
+                yticklabels = ['$'+'{:d}'.format(int(x))+'$' for x in yticklabels]                  # back to LaTeX formatting
+            else:
+                decimals = np.max([len(x.split('.')[1]) for x in yticklabels])                      # print with appropriate number of decimals
+                yticklabels = ['$'+'{:.'+decimals+'f}'.format(int(x))+'$' for x in yticklabels]     # back to LaTeX formatting
+            fig._ax1.yaxis.set_ticklabels( yticklabels )
 
 
 ###################################################################################################
