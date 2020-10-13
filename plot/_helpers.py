@@ -665,7 +665,11 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
             yticklabels_str = [x.get_text() for x in fig._ax1.yaxis.get_ticklabels()]                   # get ticklabels
             yticklabels_str = [x.replace('$','') for x in yticklabels_str]                              # remove LaTeX formatting
             yticklabels     = [float(x)/1000 for x in yticklabels_str]                                  # convert to km/s
-            if np.all([True if d=='0' else False for x in yticklabels_str for d in x.split('.')[1]]):   # if integer values, format as such
+            try:
+                is_int = np.all([True if d=='0' else False for x in yticklabels_str for d in x.split('.')[1]])
+            except:
+                is_int = False
+            if is_int:                                                                                  # if integer values, format as such
                 yticklabels = ['$'+'{:d}'.format(int(x))+'$' for x in yticklabels]                      # back to LaTeX formatting
             else:
                 decimals = np.max([len(x.split('.')[1]) for x in yticklabels])                          # print with appropriate number of decimals
