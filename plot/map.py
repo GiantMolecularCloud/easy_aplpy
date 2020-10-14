@@ -106,11 +106,6 @@ def map(fitsfile, **kwargs):
                     for lower left corner). The dictionary with formatting information can be empty
                     to use the default font size, boldness, ..., else pyplot.text kwargs are accepted.
 
-        execute_code    This option allows to pass arbitrary code that is executed just before
-                        saving the figure and can be used to access aplpy functionality that is
-                        not mapped by easy_aplpy.plot. The code must be given in a list of strings.
-                        Note this code is executed in the local namespace of easy_aplpy.plot.map.
-                        Be careful with this argument! It executes anything you pass to it.
 
     General style settings
         Settings that do not have to be changed for each plot but maybe once per script or once per
