@@ -241,10 +241,13 @@ def _recenter_plot(fitsfile, fig, kwargs):
     if ( imtype == 'pv' ):
         if not ( recenter is None ):
             if ( len(recenter) == 4 ):
-                header = fits.open(fitsfile)[0].header
-                cunit1 = u.Quantity('1'+header['cunit1'])
-                cunit2 = u.Quantity('1'+header['cunit2'])
-                fig.recenter((recenter[0].to(cunit1.unit)).value, (recenter[1].to(cunit2.unit)).value, width=(recenter[2].to(cunit1.unit)).value, height=(recenter[3].to(cunit2.unit)).value)
+                header = fits.getheader(fitsfile)
+                cunit1 = u.Unit(header['cunit1'])
+                cunit2 = u.Unit(header['cunit2'])
+                if cunit2==u.km/u.s:                        # APLpy screws everything up when the velocity axis is not in m/s, for km/s the corrcetion factor is 1e3
+                    recenter[1] *= 1e3                      # account for the factor 1000 error introduced by APLpy
+                    recenter[3] *= 1e3                      # account for the factor 1000 error introduced by APLpy
+                fig.recenter((recenter[0].to(cunit1)).value, (recenter[1].to(cunit2)).value, width=(recenter[2].to(cunit1)).value, height=(recenter[3].to(cunit2)).value)
             else:
                 raise TypeError("Recenter: for a pV diagram specify [offset center, velocity center, width, height] with astropy.units.")
 
