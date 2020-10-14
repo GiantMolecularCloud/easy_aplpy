@@ -678,6 +678,8 @@ def _show_ticksNlabels(fitsfile, fig, kwargs):
                     decimals = 3
                 yticklabels = ['$'+'{:.{decimals}f}'.format(int(x), decimals=decimals)+'$' for x in yticklabels]    # back to LaTeX formatting
             fig._ax1.yaxis.set_ticklabels( yticklabels )
+        if easy_aplpy.settings.pv_xaxis_inverted:
+            fig._ax1.xaxis.set_inverted(True)
 
 
 ###################################################################################################

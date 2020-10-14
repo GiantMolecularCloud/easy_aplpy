@@ -74,5 +74,6 @@ grid_label_fontsize   = 10              # unit: point
 grid_label_format     = '{:3.1f}'       # .format string
 grid_label_all        = False           # label all panels or just the bottom left?
 grid_label_bbox       = False           # show a box (see props below) around the labels in grid
+pv_xaxis_inverted     = True            # inverte (flip) the x-axis in pV diagrams, i.e. negative offsets right instead of left
 margins               = [0.10,0.10,0.05,0.10]    # margins around figure (left, right, top, bottom)
 props                 = {'boxstyle': "round", 'facecolor': "white", 'edgecolor': "black", 'linewidth': 0.5, 'alpha': 0.8}
