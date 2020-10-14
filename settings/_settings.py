@@ -36,6 +36,7 @@ __all__ = ['tick_label_xformat',
            'grid_label_format',
            'grid_label_all',
            'grid_label_bbox',
+           'pv_xaxis_inverted',
            'margins',
            'props'
           ]
