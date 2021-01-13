@@ -31,6 +31,8 @@ __all__ = ['tick_label_xformat',
            'axis_label_fontsize',
            'tick_length',
            'grid_label_pos',
+           'grid_label_ha',
+           'grid_label_va',
            'grid_label_color',
            'grid_label_fontsize',
            'grid_label_format',
@@ -70,6 +72,8 @@ tick_label_fontsize   = 12              # unit: point
 axis_label_fontsize   = 12              # unit: point
 tick_length           = 8               # unit: point
 grid_label_pos        = [0.95,0.95]     # relative position in panel
+grid_label_ha         = 'right'         # horizontal alignment
+grid_label_va         = 'top'           # vertical alignment
 grid_label_color      = 'black'
 grid_label_fontsize   = 10              # unit: point
 grid_label_format     = '{:3.1f}'       # .format string

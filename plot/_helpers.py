@@ -721,8 +721,8 @@ def _show_channel_label(panel, fig, kwargs):
                       color    = easy_aplpy.settings.grid_label_color,
                       relative = True,
                       size     = easy_aplpy.settings.grid_label_fontsize,
-                      horizontalalignment = 'right',
-                      verticalalignment   = 'top',
+                      horizontalalignment = easy_aplpy.settings.grid_label_ha,
+                      verticalalignment   = easy_aplpy.settings.grid_label_va,
                       **label_kwargs
                      )
 

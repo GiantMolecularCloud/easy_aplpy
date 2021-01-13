@@ -51,7 +51,7 @@ def grid(fitsfile, shape, channels, **kwargs):
                     saved as png where the input image is located.
                     OR dictionary specifying matplotlib.figure.save parameters.
 
-        figsize     Fiugre size as tupel in inches. Defaults to A4 size (8.267 * 11.692 inches)
+        figsize     Figure size as tupel in inches. Defaults to A4 size (8.267 * 11.692 inches)
 
         cmap        Colormap to plot the image. Defaults to viridis. Every named matplotlib
                     colormap can be used or any matplotlib colormap object.
@@ -60,6 +60,10 @@ def grid(fitsfile, shape, channels, **kwargs):
         vmax        Maximum value for colormap normalization. Autoscales if not provided.
 
         stretch     Colormap strech. APLpy provides 'linear', 'log', 'sqrt', 'arcsin', 'power'.
+
+        channel_label   Overplot the channel label in physical units (channel_label='physical')
+                    according to the header or as channel number ('number'). Use None to turn the
+                    channel label off. Default: 'physical'
 
         recenter    Center the image on this location and set image width/height. You either have
                     to specify radius or width and height. Must be a list array containing an
