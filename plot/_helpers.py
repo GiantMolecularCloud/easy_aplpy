@@ -355,7 +355,7 @@ def _show_colorbar(fitsfile, fig, kwargs):
 ###################################################################################################
 
 def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
-    head = fits.open(fitsfile)[0].header
+    head = fits.getheader(fitsfile)
     if ( 'bunit' in head ):
         bunit = head['bunit']
     else:
@@ -392,8 +392,12 @@ def _show_grid_colorbar(fitsfile, main_fig, panels, kwargs):
             mplcolorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=mpl.colors.LogNorm(vmin=vmin, vmax=vmax), ticks=log_ticks, orientation=orientation)
             mplcolorbar.set_ticks(log_ticks)
             mplcolorbar.set_ticklabels(['{:.2f}'.format(x) for x in log_ticks])
+        elif (stretch == 'sqrt'):
+            from astropy.visualization import simple_norm
+            normalizer = simple_norm(fits.getdata(fitsfile), stretch=stretch, min_cut=vmin, max_cut=vmax, clip=False)
+            mplcolorbar = mpl.colorbar.ColorbarBase(ax1, cmap=cmap, norm=normalizer, orientation=orientation) # ticks=log_ticks,
         else:
-            raise NotImplementedError("Scalings other than 'linear' and 'log' are not supported yet for grid plots.")
+            raise NotImplementedError("Scalings other than 'linear', sqrt and 'log' are not supported yet for grid plots.")
 
         mplcolorbar.set_label(colorbar[1],
                               size     = easy_aplpy.settings.colorbar_label_fontsize,
